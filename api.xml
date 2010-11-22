@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api serverkey="my-server-key">
+
+	<method http="GET" name="sayHello">
+		<result type="object" name="Ret" />
+	</method>
+	
+	<method http="GET" name="complex1">
+		<result type="object" name="User" />
+	</method>
+	
+	<method http="GET" name="complex2">
+		<result type="object" name="Second" />
+	</method>
+	
+	<method http="GET" name="touch">
+		<result type="simple" name="message"/>
+	</method>
+
+	<object class="Ret">
+		<field>name</field>
+		<field optional="true" array="true">age</field>
+		<field>nick</field>
+	</object>
+	
+	<object class="User">
+		<field>name</field>
+		<field>email</field>
+		<field object="Ret">ret</field>
+	</object>
+	
+	<object class="Second">
+		<field object="Tag">tag</field>
+		<field>rating</field>
+		<field object="User">user</field>
+	</object>
+	
+	<object class="Tag">
+		<field>text</field>
+		<field>author</field>
+	</object>
+</api>
+

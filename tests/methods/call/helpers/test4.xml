@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api serverkey="my-server-key">
+
+	<object class="ClassOne">
+		<field array="true">field1</field>
+		<field array="true" optional="true">field2</field>
+	</object>
+	
+</api>
+
