@@ -92,7 +92,7 @@ class Call implements iMethodHandler {
 				return true;
 			} else {
 				header("HTTP/1.0 401 Unauthorized");
-				header('WWW-Authenticate: Basic realm="Mashape API"');
+				//header('WWW-Authenticate: Basic realm="Mashape API"');
 				return false;
 			}
 		}

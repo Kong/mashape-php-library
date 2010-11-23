@@ -111,7 +111,7 @@ class MashapeHandler {
 						break;
 					case EXCEPTION_AUTH_INVALID_CODE:
 						header("HTTP/1.0 401 Unauthorized");
-						header('WWW-Authenticate: Basic realm="Mashape API"');
+						//header('WWW-Authenticate: Basic realm="Mashape API"');
 						break;
 					case EXCEPTION_REQUIRED_PARAMETERS_CODE:
 						header("HTTP/1.0 400 Bad Request");
@@ -121,11 +121,11 @@ class MashapeHandler {
 						break;
 					case EXCEPTION_INVALID_APIKEY_CODE:
 						header("HTTP/1.0 401 Unauthorized");
-						header('WWW-Authenticate: Basic realm="Mashape API"');
+						//header('WWW-Authenticate: Basic realm="Mashape API"');
 						break;
 					case EXCEPTION_EXCEEDED_LIMIT_CODE:
 						header("HTTP/1.0 401 Unauthorized");
-						header('WWW-Authenticate: Basic realm="Mashape API"');
+						//header('WWW-Authenticate: Basic realm="Mashape API"');
 						break;
 					case EXCEPTION_SYSTEM_ERROR_CODE:
 						header("HTTP/1.0 500 Internal Server Error");
