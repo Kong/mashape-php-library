@@ -24,36 +24,19 @@
  *
  */
 
-class JsonUtils {
+class ArrayUtils {
 
-	public static function serializeError($message, $code) {
-		return '{"error":{"message":' . self::encodeToJson($message) . ',"code":' . self::encodeToJson($code) . '}}';
-	}
-
-	public static function encodeToJson($text) {
-		if (is_bool($text)) {
-			if ($text) {
-				return "true";
-			} else {
-				return "false";
+	public static function existKey($key, $array) {
+		if (empty($array) == false) {
+			for ($i=0;$i<count($array);$i++) {
+				if ($array[$i] == $key) {
+					return true;
+				}
 			}
-		} else if (is_numeric($text)) {
-			return $text;
-		} else if ($text == null) {
-			return "null";
-		} else {
-			$result = str_replace("\\", "\\\\", $text);
-			return '"' . str_replace("\"", "\\\"", $result) . '"';
 		}
+		return false;
 	}
-
-	public static function removeLastChar($array, $object) {
-		$result = $object;
-		if (count($array) > 0) {
-			$result = substr($result, 0, strlen($result) - 1);
-		}
-		return $result;
-	}
+	
 }
 
 ?>

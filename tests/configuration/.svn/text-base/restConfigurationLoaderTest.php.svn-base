@@ -24,36 +24,17 @@
  *
  */
 
-class JsonUtils {
+require_once(dirname(__FILE__) . "/../../mashape/configuration/restConfigurationLoader.php");
 
-	public static function serializeError($message, $code) {
-		return '{"error":{"message":' . self::encodeToJson($message) . ',"code":' . self::encodeToJson($code) . '}}';
-	}
-
-	public static function encodeToJson($text) {
-		if (is_bool($text)) {
-			if ($text) {
-				return "true";
-			} else {
-				return "false";
-			}
-		} else if (is_numeric($text)) {
-			return $text;
-		} else if ($text == null) {
-			return "null";
-		} else {
-			$result = str_replace("\\", "\\\\", $text);
-			return '"' . str_replace("\"", "\\\"", $result) . '"';
-		}
-	}
-
-	public static function removeLastChar($array, $object) {
-		$result = $object;
-		if (count($array) > 0) {
-			$result = substr($result, 0, strlen($result) - 1);
-		}
-		return $result;
+class RESTConfigurationLoaderTest extends PHPUnit_Framework_TestCase
+{
+	function testLoadConfiguration() {
+		$configuration = RESTConfigurationLoader::loadConfiguration();
+		$this->assertFalse($configuration == null);
+		$this->assertEquals(4, count($configuration->getMethods()));
+		$this->assertEquals(4, count($configuration->getObjects()));
+		$this->assertEquals("my-server-key", $configuration->getServerkey());
 	}
 }
-
+ 
 ?>

@@ -24,35 +24,28 @@
  *
  */
 
-class JsonUtils {
+class RESTConfiguration {
+	private $methods;
+	private $objects;
+	private $serverkey;
 
-	public static function serializeError($message, $code) {
-		return '{"error":{"message":' . self::encodeToJson($message) . ',"code":' . self::encodeToJson($code) . '}}';
+	public function getServerkey() {
+		return $this->serverkey;
 	}
-
-	public static function encodeToJson($text) {
-		if (is_bool($text)) {
-			if ($text) {
-				return "true";
-			} else {
-				return "false";
-			}
-		} else if (is_numeric($text)) {
-			return $text;
-		} else if ($text == null) {
-			return "null";
-		} else {
-			$result = str_replace("\\", "\\\\", $text);
-			return '"' . str_replace("\"", "\\\"", $result) . '"';
-		}
+	public function getMethods() {
+		return $this->methods;
 	}
-
-	public static function removeLastChar($array, $object) {
-		$result = $object;
-		if (count($array) > 0) {
-			$result = substr($result, 0, strlen($result) - 1);
-		}
-		return $result;
+	public function getObjects() {
+		return $this->objects;
+	}
+	public function setServerkey($x) {
+		$this->serverkey = $x;
+	}
+	public function setMethods($x) {
+		$this->methods = $x;
+	}
+	public function setObjects($x) {
+		$this->objects = $x;
 	}
 }
 

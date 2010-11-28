@@ -24,35 +24,29 @@
  *
  */
 
-class JsonUtils {
+require_once(dirname(__FILE__) . "/../../../mashape/mashape.php");
+require_once(dirname(__FILE__) . "/../../../mashape/methods/discover/discover.php");
 
-	public static function serializeError($message, $code) {
-		return '{"error":{"message":' . self::encodeToJson($message) . ',"code":' . self::encodeToJson($code) . '}}';
-	}
-
-	public static function encodeToJson($text) {
-		if (is_bool($text)) {
-			if ($text) {
-				return "true";
+class DiscoverTest extends PHPUnit_Framework_TestCase
+{
+	function testDiscover() {
+		$discover = new Discover();
+		try {
+			$result = $discover->handle(new SampleAPI(), null, "post");
+			$this->assertTrue(false);
+		} catch (Exception $e) {
+			if ($e instanceof MashapeException) {
+				$this->assertTrue(true);
 			} else {
-				return "false";
+				$this->assertTrue(false);
 			}
-		} else if (is_numeric($text)) {
-			return $text;
-		} else if ($text == null) {
-			return "null";
-		} else {
-			$result = str_replace("\\", "\\\\", $text);
-			return '"' . str_replace("\"", "\\\"", $result) . '"';
 		}
 	}
+}
 
-	public static function removeLastChar($array, $object) {
-		$result = $object;
-		if (count($array) > 0) {
-			$result = substr($result, 0, strlen($result) - 1);
-		}
-		return $result;
+class SampleAPI extends MashapeRestAPI {
+	public function sayHello($name) {
+		return "Hi, " . $name;
 	}
 }
 

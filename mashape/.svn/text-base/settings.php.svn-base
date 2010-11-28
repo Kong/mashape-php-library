@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 /*
  * Mashape PHP library.
@@ -24,36 +24,12 @@
  *
  */
 
-class JsonUtils {
-
-	public static function serializeError($message, $code) {
-		return '{"error":{"message":' . self::encodeToJson($message) . ',"code":' . self::encodeToJson($code) . '}}';
-	}
-
-	public static function encodeToJson($text) {
-		if (is_bool($text)) {
-			if ($text) {
-				return "true";
-			} else {
-				return "false";
-			}
-		} else if (is_numeric($text)) {
-			return $text;
-		} else if ($text == null) {
-			return "null";
-		} else {
-			$result = str_replace("\\", "\\\\", $text);
-			return '"' . str_replace("\"", "\\\"", $result) . '"';
-		}
-	}
-
-	public static function removeLastChar($array, $object) {
-		$result = $object;
-		if (count($array) > 0) {
-			$result = substr($result, 0, strlen($result) - 1);
-		}
-		return $result;
-	}
-}
+// The variable name where Mashape will cache the configuration file.
+// By default it's "mashape_api_configuration"
+define("SESSION_VARNAME", "mashape_api_configuration");
+	
+// The path of the XML configuration file required by Mashape.
+// The path is relative to your implementation file. By default it's "./api.xml"
+define("CONFIGURATION_FILEPATH", "./api.xml");
 
 ?>

@@ -24,35 +24,42 @@
  *
  */
 
-class JsonUtils {
+class RESTMethod {
+	private $object;
+	private $result;
+	private $name;
+	private $array;
+	private $http;
 
-	public static function serializeError($message, $code) {
-		return '{"error":{"message":' . self::encodeToJson($message) . ',"code":' . self::encodeToJson($code) . '}}';
+	public function getObject() {
+		return $this->object;
 	}
-
-	public static function encodeToJson($text) {
-		if (is_bool($text)) {
-			if ($text) {
-				return "true";
-			} else {
-				return "false";
-			}
-		} else if (is_numeric($text)) {
-			return $text;
-		} else if ($text == null) {
-			return "null";
-		} else {
-			$result = str_replace("\\", "\\\\", $text);
-			return '"' . str_replace("\"", "\\\"", $result) . '"';
-		}
+	public function getResult() {
+		return $this->result;
 	}
-
-	public static function removeLastChar($array, $object) {
-		$result = $object;
-		if (count($array) > 0) {
-			$result = substr($result, 0, strlen($result) - 1);
-		}
-		return $result;
+	public function getName() {
+		return $this->name;
+	}
+	public function getHttp() {
+		return $this->http;
+	}
+	public function setObject($x) {
+		$this->object = $x;
+	}
+	public function setResult($x) {
+		$this->result = $x;
+	}
+	public function setName($x) {
+		$this->name = $x;
+	}
+	public function setHttp($x) {
+		$this->http = $x;
+	}
+	public function setArray($x) {
+		$this->array = $x;
+	}
+	public function isArray() {
+		return $this->array;
 	}
 }
 

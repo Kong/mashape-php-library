@@ -24,35 +24,16 @@
  *
  */
 
-class JsonUtils {
-
-	public static function serializeError($message, $code) {
-		return '{"error":{"message":' . self::encodeToJson($message) . ',"code":' . self::encodeToJson($code) . '}}';
-	}
-
-	public static function encodeToJson($text) {
-		if (is_bool($text)) {
-			if ($text) {
-				return "true";
-			} else {
-				return "false";
-			}
-		} else if (is_numeric($text)) {
-			return $text;
-		} else if ($text == null) {
-			return "null";
-		} else {
-			$result = str_replace("\\", "\\\\", $text);
-			return '"' . str_replace("\"", "\\\"", $result) . '"';
+if (!function_exists('json_decode')) {
+	function json_decode($content, $assoc=false) {
+		require_once(dirname(__FILE__) . "../json/jsonImpl.php");
+		if ($assoc) {
+			$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 		}
-	}
-
-	public static function removeLastChar($array, $object) {
-		$result = $object;
-		if (count($array) > 0) {
-			$result = substr($result, 0, strlen($result) - 1);
+		else {
+			$json = new Services_JSON;
 		}
-		return $result;
+		return $json->decode($content);
 	}
 }
 

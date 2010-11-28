@@ -24,35 +24,42 @@
  *
  */
 
-class JsonUtils {
+class RESTField {
+	private $name;
+	private $object;
+	private $method;
+	private $array;
+	private $optional;
 
-	public static function serializeError($message, $code) {
-		return '{"error":{"message":' . self::encodeToJson($message) . ',"code":' . self::encodeToJson($code) . '}}';
+	public function getName() {
+		return $this->name;
 	}
-
-	public static function encodeToJson($text) {
-		if (is_bool($text)) {
-			if ($text) {
-				return "true";
-			} else {
-				return "false";
-			}
-		} else if (is_numeric($text)) {
-			return $text;
-		} else if ($text == null) {
-			return "null";
-		} else {
-			$result = str_replace("\\", "\\\\", $text);
-			return '"' . str_replace("\"", "\\\"", $result) . '"';
-		}
+	public function getObject() {
+		return $this->object;
 	}
-
-	public static function removeLastChar($array, $object) {
-		$result = $object;
-		if (count($array) > 0) {
-			$result = substr($result, 0, strlen($result) - 1);
-		}
-		return $result;
+	public function getMethod() {
+		return $this->method;
+	}
+	public function isArray() {
+		return $this->array;
+	}
+	public function isOptional() {
+		return $this->optional;
+	}
+	public function setName($x) {
+		$this->name = $x;
+	}
+	public function setObject($x) {
+		$this->object = $x;
+	}
+	public function setMethod($x) {
+		$this->method = $x;
+	}
+	public function setArray($x) {
+		$this->array = $x;
+	}
+	public function setOptional($x) {
+		$this->optional = $x;
 	}
 }
 
