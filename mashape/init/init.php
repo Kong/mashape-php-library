@@ -29,5 +29,6 @@ require_once(dirname(__FILE__) . "/session.php");
 require_once(dirname(__FILE__) . "/json.php");
 require_once(dirname(__FILE__) . "/../exceptions/mashapeException.php");
 
-define("LIBRARY_VERSION", "V03");
+define("LIBRARY_LANGUAGE", "PHP");
+define("LIBRARY_VERSION", "V04");
 ?>

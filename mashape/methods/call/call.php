@@ -57,7 +57,7 @@ class Call implements iMethodHandler {
 		unset($parameters[TOKEN]); // remove the token parameter
 
 		//Validate Request
-		if (self::validateRequest($token, $methodName)) {
+		if (self::validateRequest($token, $methodName, false)) {
 			return doCall($method, $parameters, $instance);
 		} else {
 			throw new MashapeException(EXCEPTION_AUTH_INVALID, EXCEPTION_AUTH_INVALID_CODE);
@@ -70,7 +70,7 @@ class Call implements iMethodHandler {
 		}
 	}
 
-	private function validateRequest($token, $method) {
+	private function validateRequest($token, $method, $retry) {
 		$serverkey = RESTConfigurationLoader::loadConfiguration()->getServerkey();
 		// If the request comes from the local computer, then don't require authorization,
 		// otherwise check the headers
@@ -85,6 +85,13 @@ class Call implements iMethodHandler {
 			$validationResponse = json_decode($response);
 			if (!empty($validationResponse->error)) {
 				$error = $validationResponse->error;
+				
+				// Reload the configuration if the server key is invalid
+				if ($retry == false && $error->code == 1005) {
+					RESTConfigurationLoader::reloadConfiguration();
+					return $this->validateRequest($token, $method, true);
+				}
+				
 				throw new MashapeException($error->message, $error->code);
 			}
 			$authorization = $validationResponse->authorized;
@@ -95,5 +102,6 @@ class Call implements iMethodHandler {
 			}
 		}
 	}
+
 }
 ?>

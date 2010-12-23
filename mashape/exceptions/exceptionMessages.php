@@ -65,7 +65,7 @@ define("EXCEPTION_METHOD_NOTFOUND_CODE", 1006);
 define("EXCEPTION_METHOD_NOTFOUND", "The method requested was not found");
 
 define("EXCEPTION_AUTH_INVALID_CODE", 1007);
-define("EXCEPTION_AUTH_INVALID", "You're request has not been authorized");
+define("EXCEPTION_AUTH_INVALID", "The request has not been authorized");
 
 define("EXCEPTION_REQUIRED_PARAMETERS_CODE", 1008);
 define("EXCEPTION_REQUIRED_PARAMETERS", "Some parameters required by the method are missing");
@@ -73,6 +73,8 @@ define("EXCEPTION_REQUIRED_PARAMETERS", "Some parameters required by the method 
 define("EXCEPTION_REQUIRED_PARAMETER", "Missing required parameter \"%s\"");
 
 // http://api.mashape.com Error codes
+
+define("EXCEPTION_INSTANCE_NULL", "Please verify the class you're initializing with 'MashapeHandler::handleApi(..)' exists");
 
 define("EXCEPTION_INVALID_APIKEY_CODE", 2001);
 define("EXCEPTION_EXCEEDED_LIMIT_CODE", 2002);

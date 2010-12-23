@@ -39,7 +39,8 @@ class HttpUtils {
 	}
 
 	public static function isLocal() {
-		return self::getRealIpAddr() == "127.0.0.1";
+		$ip = self::getRealIpAddr();
+		return $ip == "127.0.0.1" || $ip == "::1";
 	}
 
 	public static function getHeader($name) {

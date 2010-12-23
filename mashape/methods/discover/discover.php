@@ -33,6 +33,9 @@ require_once(dirname(__FILE__) . "/helpers/discoverObjects.php");
 
 define("HEADER_SERVER_KEY", "X-Mashape-Server-Key");
 
+define("MODE", "_mode");
+define("SIMPLE_MODE", "simple");
+
 class Discover implements iMethodHandler {
 
 	public function handle($instance, $parameters, $httpRequestMethod) {
@@ -48,15 +51,26 @@ class Discover implements iMethodHandler {
 
 		$resultJson = "{";
 
-		$objectsFound = array();
-		$methods = discoverMethods($instance, $configuration, $objectsFound);
-		$objects = discoverObjects($configuration, $objectsFound);
-		$pluginVersion = '"version":"' . LIBRARY_VERSION . '"';
+		$mode = (isset($parameters[MODE])) ? $parameters[MODE] : null;
 
-		$resultJson .= $methods . "," . $objects . "," . $pluginVersion;
-
+		if ($mode == null || $mode != SIMPLE_MODE) {
+			$objectsFound = array();
+			$methods = discoverMethods($instance, $configuration, $objectsFound);
+			$objects = discoverObjects($configuration, $objectsFound);
+			$resultJson .= $methods . "," . $objects . "," . $this->getSimpleInfo();
+		} else {
+			$resultJson .= $this->getSimpleInfo();
+		}
 		$resultJson .= "}";
+
 		return $resultJson;
+	}
+	
+	private function getSimpleInfo() {
+		$libraryVersion = '"version":"' . LIBRARY_VERSION . '"';
+		$libraryLanguage = '"language":"' . LIBRARY_LANGUAGE . '"';
+		
+		return $libraryLanguage . "," . $libraryVersion;
 	}
 
 	private function validateRequest($configuration) {

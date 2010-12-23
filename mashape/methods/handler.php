@@ -51,6 +51,9 @@ class MashapeHandler {
 	public static function handleAPI($instance) {
 		header("Content-type: application/json");
 		try {
+			if ($instance == null) {
+				throw new MashapeException(EXCEPTION_INSTANCE_NULL, EXCEPTION_SYSTEM_ERROR_CODE);
+			}
 			$requestMethod = (isset($_SERVER['REQUEST_METHOD'])) ? strtolower($_SERVER['REQUEST_METHOD']) : null;
 			$params;
 			if ($requestMethod == 'post') {
