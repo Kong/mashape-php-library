@@ -24,6 +24,8 @@
  *
  */
 
+require_once(dirname(__FILE__) . "/../../xml/xmlParser.php");
+require_once(dirname(__FILE__) . "/../../xml/xmlParserUtils.php");
 require_once(dirname(__FILE__) . "/../../exceptions/mashapeException.php");
 require_once(dirname(__FILE__) . "/../restMethod.php");
 
@@ -36,19 +38,21 @@ define("XML_RESULT_ARRAY", "array");
 define("XML_RESULT_TYPE", "type");
 define("XML_RESULT_NAME", "name");
 
-function loadMethodsFromXML($xmlDoc) {
+function loadMethodsFromXML($xmlParser) {
 	$methods = array();
-
-	$xmlMethods= $xmlDoc->getElementsByTagName(XML_METHOD);
+	
+	$xmlMethods = XmlParserUtils::getChildren($xmlParser->document, XML_METHOD);
+	
 	foreach ($xmlMethods as $xmlMethod) {
-		$name = $xmlMethod->getAttribute(XML_METHOD_NAME);
+		$name = (XmlParserUtils::existAttribute($xmlMethod, XML_METHOD_NAME)) ? $xmlMethod->tagAttrs[XML_METHOD_NAME] : null;
+		
 		if (empty($name)) {
 			throw new MashapeException(EXCEPTION_METHOD_EMPTY_NAME, EXCEPTION_XML_CODE);
 		} else if (existMethod($methods, $name)) {
 			throw new MashapeException(sprintf(EXCEPTION_METHOD_DUPLICATE_NAME, $name), EXCEPTION_XML_CODE);
 		}
 
-		$http = $xmlMethod->getAttribute(XML_METHOD_HTTP);
+		$http = (XmlParserUtils::existAttribute($xmlMethod, XML_METHOD_HTTP)) ? $xmlMethod->tagAttrs[XML_METHOD_HTTP] : null;
 		if (empty($http)) {
 			throw new MashapeException(EXCEPTION_METHOD_EMPTY_HTTP, EXCEPTION_XML_CODE);
 		} else {
@@ -59,36 +63,38 @@ function loadMethodsFromXML($xmlDoc) {
 		}
 
 		// Get the result
-		$resultsNode = $xmlMethod->getElementsByTagName(XML_RESULT);
+		$resultsNode = $xmlMethod->result;
+		
 		$resultNode = null;
-		if ($resultsNode->length > 1) {
+		if (count($resultsNode) > 1) {
 			throw new MashapeException(sprintf(EXCEPTION_RESULT_MULTIPLE, $name), EXCEPTION_XML_CODE);
-		} elseif ($resultsNode->length==1) {
-			$resultNode = $resultsNode->item(0);
+		} elseif (count($resultsNode)==1) {
+			$resultNode = $resultsNode[0];
 		} else {
 			throw new MashapeException(sprintf(EXCEPTION_RESULT_MISSING, $name), EXCEPTION_XML_CODE);
 		}
-
+		
 		$object = null;
 		$array = null;
 		$resultName = null;
 
 		if ($resultNode != null) {
-			$array = $resultNode->getAttribute(XML_RESULT_ARRAY);
+			
+			$array = (XmlParserUtils::existAttribute($resultNode, XML_RESULT_ARRAY)) ? $resultNode->tagAttrs[XML_RESULT_ARRAY] : null;
 			if ($array != null && strtolower($array) == "true") {
 				$array = true;
 			} else {
 				$array = false;
 			}
 
-			$type = $resultNode->getAttribute(XML_RESULT_TYPE);
+			$type = (XmlParserUtils::existAttribute($resultNode, XML_RESULT_TYPE)) ? $resultNode->tagAttrs[XML_RESULT_TYPE] : null;
 			if (strtolower($type=="simple")) {
-				$resultName = $resultNode->getAttribute(XML_RESULT_NAME);
+				$resultName = (XmlParserUtils::existAttribute($resultNode, XML_RESULT_NAME)) ? $resultNode->tagAttrs[XML_RESULT_NAME] : null;
 				if (empty($resultName)) {
 					throw new MashapeException(sprintf(EXCEPTION_RESULT_EMPTY_NAME_SIMPLE, $name), EXCEPTION_XML_CODE);
 				}
 			} else if (strtolower($type=="object")) {
-				$object = $resultNode->getAttribute(XML_RESULT_NAME);
+				$object = (XmlParserUtils::existAttribute($resultNode, XML_RESULT_NAME)) ? $resultNode->tagAttrs[XML_RESULT_NAME] : null;
 				if (empty($object)) {
 					throw new MashapeException(sprintf(EXCEPTION_RESULT_EMPTY_NAME_OBJECT, $name), EXCEPTION_XML_CODE);
 				}

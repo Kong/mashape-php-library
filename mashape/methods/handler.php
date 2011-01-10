@@ -48,7 +48,7 @@ class MashapeHandler {
 		return $result;
 	}
 
-	public static function handleAPI($instance) {
+	public static function handleAPI($instance, $serverKey) {
 		header("Content-type: application/json");
 		try {
 			if ($instance == null) {
@@ -77,11 +77,11 @@ class MashapeHandler {
 				switch (strtolower($operation)) {
 					case "discover":
 						$discover = new Discover();
-						$result = $discover->handle($instance, $params, $requestMethod);
+						$result = $discover->handle($instance, $serverKey, $params, $requestMethod);
 						break;
 					case "call":
 						$call = new Call();
-						$result = $call->handle($instance, $params, $requestMethod);
+						$result = $call->handle($instance, $serverKey, $params, $requestMethod);
 						break;
 					default:
 						throw new MashapeException(EXCEPTION_NOTSUPPORTED_OPERATION, EXCEPTION_NOTSUPPORTED_OPERATION_CODE);

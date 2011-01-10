@@ -24,6 +24,8 @@
  *
  */
 
+require_once(dirname(__FILE__) . "/../../xml/xmlParser.php");
+require_once(dirname(__FILE__) . "/../../xml/xmlParserUtils.php");
 require_once(dirname(__FILE__) . "/../../exceptions/mashapeException.php");
 require_once(dirname(__FILE__) . "/../restField.php");
 require_once(dirname(__FILE__) . "/../restObject.php");
@@ -37,13 +39,13 @@ define("XML_FIELD_METHOD", "method");
 define("XML_FIELD_ARRAY", "array");
 define("XML_FIELD_OPTIONAL", "optional");
 
-function loadObjectsFromXML($xmlDocument) {
+function loadObjectsFromXML($xmlParser) {
 	$objects = array();
 
-	$xmlObjects = $xmlDocument->getElementsByTagName(XML_OBJECT);
+	$xmlObjects = XmlParserUtils::getChildren($xmlParser->document, XML_OBJECT);
 	foreach($xmlObjects as $xmlObject)
 	{
-		$className = $xmlObject->getAttribute(XML_OBJECT_CLASS);
+		$className = (XmlParserUtils::existAttribute($xmlObject, XML_OBJECT_CLASS)) ? $xmlObject->tagAttrs[XML_OBJECT_CLASS] : null;
 		if (empty($className)) {
 			throw new MashapeException(EXCEPTION_OBJECT_EMPTY_CLASS, EXCEPTION_XML_CODE);
 		} else if (existClassName($objects, $className)) {
@@ -52,27 +54,30 @@ function loadObjectsFromXML($xmlDocument) {
 
 		//Get fields
 		$fields = array();
-		$xmlFields = $xmlObject->getElementsByTagName(XML_FIELD);
+		$xmlFields = XmlParserUtils::getChildren($xmlObject, XML_FIELD);
+		if (empty($xmlFields)) {
+			throw new MashapeException(sprintf(EXCEPTION_EMPTY_FIELDS, $className), EXCEPTION_XML_CODE);
+		}
 		foreach($xmlFields as $xmlField)
 		{
-			$field_name = $xmlField->textContent;
+			$field_name = $xmlField->tagData;
 			if (empty($field_name)) {
 				throw new MashapeException(EXCEPTION_FIELD_EMPTY_NAME, EXCEPTION_XML_CODE);
 			} else if (existFieldName($fields, $field_name)) {
 				throw new MashapeException(sprintf(EXCEPTION_FIELD_NAME_DUPLICATE, $field_name, $className), EXCEPTION_XML_CODE);
 			}
 
-			$field_object = $xmlField->getAttribute(XML_FIELD_OBJECT);
-			$field_method = $xmlField->getAttribute(XML_FIELD_METHOD);
+			$field_object = (XmlParserUtils::existAttribute($xmlField, XML_FIELD_OBJECT)) ? $xmlField->tagAttrs[XML_FIELD_OBJECT] : null;
+			$field_method = (XmlParserUtils::existAttribute($xmlField, XML_FIELD_METHOD)) ? $xmlField->tagAttrs[XML_FIELD_METHOD] : null;
 
-			$field_array = $xmlField->getAttribute(XML_FIELD_ARRAY);
+			$field_array = (XmlParserUtils::existAttribute($xmlField, XML_FIELD_ARRAY)) ? $xmlField->tagAttrs[XML_FIELD_ARRAY] : null;
 			if ($field_array != null && strtolower($field_array) == "true") {
 				$field_array = true;
 			} else {
 				$field_array = false;
 			}
 
-			$field_optional = $xmlField->getAttribute(XML_FIELD_OPTIONAL);
+			$field_optional = (XmlParserUtils::existAttribute($xmlField, XML_FIELD_OPTIONAL)) ? $xmlField->tagAttrs[XML_FIELD_OPTIONAL] : null;
 			if ($field_optional != null && strtolower($field_optional) == "true") {
 				$field_optional = true;
 			} else {

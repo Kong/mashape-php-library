@@ -30,6 +30,9 @@ require_once(dirname(__FILE__) . "/../../../exceptions/mashapeException.php");
 function discoverObjects($configuration, $objectsFound) {
 	$result = '"objects":[';
 	$objects = $configuration->getObjects();
+	
+	$objectsDone = array();
+	
 	foreach ($objects as $object) {
 		$result .= "{";
 
@@ -42,6 +45,11 @@ function discoverObjects($configuration, $objectsFound) {
 			$fieldName = $field->getName();
 			$result .= '"name":"' . $fieldName . '",';
 			$objectName = $field->getObject();
+			if ($objectName != null) {
+				if (!in_array($objectName, $objectsFound) && !in_array($objectName, $objectsDone)) {
+					array_push($objectsFound, $objectName);
+				}
+			}
 			$result .= '"object":' . (empty($objectName) ? "null" : '"' . $objectName . '"') . ',';
 			$methodName = $field->getMethod();
 			$result .= '"method":' . (empty($methodName) ? "null" : '"' . $methodName . '"') . ',';
@@ -55,7 +63,9 @@ function discoverObjects($configuration, $objectsFound) {
 
 		$result .= ']';
 		$result .= "},";
-
+		
+		array_push($objectsDone, $className);
+		
 		$objectsFound = array_diff($objectsFound, array($className));
 	}
 	// Remove the last comma
@@ -69,7 +79,7 @@ function discoverObjects($configuration, $objectsFound) {
 			$missingObjects .= $requiredObject . ",";
 		}
 		$missingObjects = JsonUtils::removeLastChar($objectsFound, $missingObjects);
-		throw new MashapeException(sprintf(EXCEPTION_XML_MISSING_OBJECTS, $missingObjects), EXCEPTION_XML_CODE);
+		throw new MashapeException(sprintf(EXCEPTION_MISSING_OBJECTS, $missingObjects), EXCEPTION_XML_CODE);
 	}
 	
 	return $result;

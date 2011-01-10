@@ -29,10 +29,10 @@ require_once(dirname(__FILE__) . "/../../mashape/json/jsonUtils.php");
 class JsonUtilsTest extends PHPUnit_Framework_TestCase
 {
 	function testSerializeError() {
-		$this->assertEquals('{"error":{"message":"this is an error","code":2}}', JsonUtils::serializeError("this is an error", 2));
-		$this->assertEquals('{"error":{"message":"this is an error","code":null}}', JsonUtils::serializeError("this is an error", null));
-		$this->assertEquals('{"error":{"message":null,"code":null}}', JsonUtils::serializeError(null, null));
-		$this->assertEquals('{"error":{"message":"this is a \"great\" error","code":2}}', JsonUtils::serializeError('this is a "great" error', 2));
+		$this->assertEquals('{"errors":[{"message":"this is an error","code":2}], "result":null}', JsonUtils::serializeError("this is an error", 2));
+		$this->assertEquals('{"errors":[{"message":"this is an error","code":null}], "result":null}', JsonUtils::serializeError("this is an error", null));
+		$this->assertEquals('{"errors":[{"message":null,"code":null}], "result":null}', JsonUtils::serializeError(null, null));
+		$this->assertEquals('{"errors":[{"message":"this is a \"great\" error","code":2}], "result":null}', JsonUtils::serializeError('this is a "great" error', 2));
 	}
 }
 

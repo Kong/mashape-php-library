@@ -25,7 +25,7 @@
  */
 
 interface iMethodHandler {
-	public function handle($instance, $parameters, $httpRequestMethod);
+	public function handle($instance, $serverKey, $parameters, $httpRequestMethod);
 }
 
 ?>

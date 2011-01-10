@@ -26,6 +26,8 @@
 
 require_once(dirname(__FILE__) . "/../settings.php");
 require_once(dirname(__FILE__) . "/../init/init.php");
+require_once(dirname(__FILE__) . "/../xml/xmlParser.php");
+require_once(dirname(__FILE__) . "/../xml/xmlParserUtils.php");
 require_once(dirname(__FILE__) . "/helpers/loadMethods.php");
 require_once(dirname(__FILE__) . "/helpers/loadObjects.php");
 require_once(dirname(__FILE__) . "/restConfiguration.php");
@@ -71,19 +73,15 @@ class RESTConfigurationLoader {
 	}
 
 	private static function init($path) {
-		$xmlDocument = self::getXmlDoc($path);
-
+		$xmlParser = self::getXmlDoc($path);
+		
 		// Load Methods
-		$methods = loadMethodsFromXML($xmlDocument);
+		$methods = loadMethodsFromXML($xmlParser);
 
 		// Load Objects
-		$objects = loadObjectsFromXML($xmlDocument);
-
-		// Server Key
-		$serverkey = self::getServerKey($xmlDocument);
+		$objects = loadObjectsFromXML($xmlParser);
 
 		$result = new RESTConfiguration();
-		$result->setServerkey($serverkey);
 		$result->setMethods($methods);
 		$result->setObjects($objects);
 		return $result;
@@ -91,18 +89,13 @@ class RESTConfigurationLoader {
 
 	private static function getXmlDoc($path) {
 		if (file_exists($path)) {
-			$doc = new DOMDocument();
-			$doc->load($path);
-			return $doc;
+			$xml = file_get_contents($path);
+			$xmlParser = new XMLParser($xml);
+			$xmlParser->Parse();
+			return $xmlParser;
 		} else {
 			throw new MashapeException(sprintf(EXCEPTION_CONFIGURATION_FILE_NOTFOUND, $path), EXCEPTION_XML_CODE);
 		}
-	}
-
-	private static function getServerKey($xmlDocument) {
-		$root = $xmlDocument->documentElement;
-		$xmlServerKey = $root->getAttribute(XML_SERVERKEY);
-		return $xmlServerKey;
 	}
 
 }

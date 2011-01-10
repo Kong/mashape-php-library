@@ -33,7 +33,6 @@ class RESTConfigurationLoaderTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse($configuration == null);
 		$this->assertEquals(1, count($configuration->getMethods()));
 		$this->assertEquals(0, count($configuration->getObjects()));
-		$this->assertEquals("my-server-key", $configuration->getServerkey());
 	}
 }
  

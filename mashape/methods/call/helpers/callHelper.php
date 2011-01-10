@@ -41,7 +41,6 @@ function doCall($method, $parameters, $instance) {
 	}
 
 	$resultJson = '{';
-	$resultJson .= '"version":"' . LIBRARY_VERSION . '",';
 
 	//Print custom errors
 	$reflectedErrorMethod = $reflectedClass->getMethod("getErrors");

@@ -27,7 +27,7 @@
 class JsonUtils {
 
 	public static function serializeError($message, $code) {
-		return '{"error":{"message":' . self::encodeToJson($message) . ',"code":' . self::encodeToJson($code) . '}}';
+		return '{"errors":[{"message":' . self::encodeToJson($message) . ',"code":' . self::encodeToJson($code) . '}], "result":null}';
 	}
 
 	public static function encodeToJson($text) {

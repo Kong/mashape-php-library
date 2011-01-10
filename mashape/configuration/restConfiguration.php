@@ -27,19 +27,12 @@
 class RESTConfiguration {
 	private $methods;
 	private $objects;
-	private $serverkey;
 
-	public function getServerkey() {
-		return $this->serverkey;
-	}
 	public function getMethods() {
 		return $this->methods;
 	}
 	public function getObjects() {
 		return $this->objects;
-	}
-	public function setServerkey($x) {
-		$this->serverkey = $x;
 	}
 	public function setMethods($x) {
 		$this->methods = $x;

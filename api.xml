@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<api serverkey="my-server-key">
+<api>
 
 	<method http="GET" name="sayHello">
 		<result type="simple" name="helloWorldMessage" />
 	</method>
 
 </api>
+

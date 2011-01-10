@@ -32,21 +32,25 @@ require_once(dirname(__FILE__) . "/helpers/callHelper.php");
 
 define("METHOD", "_method");
 define("TOKEN", "_token");
+define("LANGUAGE", "_language");
+define("VERSION", "_version");
 define("QUERY_PARAM_TOKEN", "token");
 define("QUERY_PARAM_METHOD", "method");
 define("QUERY_PARAM_SERVERKEY", "serverkey");
+define("QUERY_PARAM_LANGUAGE", "language");
+define("QUERY_PARAM_VERSION", "version");
 define("MASHAPE_TOKEN_VALIDATION_URL", "http://api.mashape.com/validateToken");
 
 class Call implements iMethodHandler {
 
-	public function handle($instance, $parameters, $httpRequestMethod) {
+	public function handle($instance, $serverKey, $parameters, $httpRequestMethod) {
 		// If the request comes from local, reload the configuration
 		$this->reloadConfiguration();
 
 		$methodName = (isset($parameters[METHOD])) ? $parameters[METHOD] : null;
 		$method = RESTConfigurationLoader::getMethod($methodName);
 		if (empty($method)) {
-			throw new MashapeException(EXCEPTION_METHOD_NOTFOUND, EXCEPTION_METHOD_NOTFOUND_CODE);
+			throw new MashapeException(sprintf(EXCEPTION_METHOD_NOTFOUND, $methodName), EXCEPTION_METHOD_NOTFOUND_CODE);
 		}
 		if (strtolower($method->getHttp()) != strtolower($httpRequestMethod)) {
 			throw new MashapeException(EXCEPTION_INVALID_HTTPMETHOD, EXCEPTION_INVALID_HTTPMETHOD_CODE);
@@ -55,9 +59,14 @@ class Call implements iMethodHandler {
 		unset($parameters[METHOD]); // Remove the method name from the params
 		$token = (isset($parameters[TOKEN])) ? $parameters[TOKEN] : null;
 		unset($parameters[TOKEN]); // remove the token parameter
+		
+		$language = (isset($parameters[LANGUAGE])) ? $parameters[LANGUAGE] : null;
+		unset($parameters[LANGUAGE]); // remove the language parameter
+		$version = (isset($parameters[VERSION])) ? $parameters[VERSION] : null;
+		unset($parameters[VERSION]); // remove the version parameter
 
 		//Validate Request
-		if (self::validateRequest($token, $methodName, false)) {
+		if (self::validateRequest($serverKey, $token, $methodName, $language, $version, true)) {
 			return doCall($method, $parameters, $instance);
 		} else {
 			throw new MashapeException(EXCEPTION_AUTH_INVALID, EXCEPTION_AUTH_INVALID_CODE);
@@ -70,26 +79,31 @@ class Call implements iMethodHandler {
 		}
 	}
 
-	private function validateRequest($token, $method, $retry) {
-		$serverkey = RESTConfigurationLoader::loadConfiguration()->getServerkey();
+	private function validateRequest($serverKey, $token, $method, $language, $version, $retry) {
 		// If the request comes from the local computer, then don't require authorization,
 		// otherwise check the headers
 		if (HttpUtils::isLocal()) {
 			return true;
 		} else {
-			if (empty($serverkey)) {
+			if (empty($serverKey)) {
 				throw new MashapeException(EXCEPTION_EMPTY_SERVERKEY, EXCEPTION_XML_CODE);
 			}
-			$url = MASHAPE_TOKEN_VALIDATION_URL . "?" . QUERY_PARAM_TOKEN . "=" . $token . "&" . QUERY_PARAM_SERVERKEY . "=" . $serverkey . "&" . QUERY_PARAM_METHOD . "=" . $method;
+			$url = MASHAPE_TOKEN_VALIDATION_URL . "?" . QUERY_PARAM_TOKEN . "=" . $token . "&" . QUERY_PARAM_SERVERKEY . "=" . $serverKey . "&" . QUERY_PARAM_METHOD . "=" . $method . "&" . QUERY_PARAM_LANGUAGE . "=" . $language . "&" . QUERY_PARAM_VERSION . "=" . $version;
 			$response = HttpUtils::makeHttpRequest($url);
+			if (empty($response)) {
+				throw new MashapeException(EXCEPTION_EMPTY_REQUEST, EXCEPTION_SYSTEM_ERROR_CODE);
+			}
 			$validationResponse = json_decode($response);
-			if (!empty($validationResponse->error)) {
-				$error = $validationResponse->error;
+			if (empty($validationResponse)) {
+				throw new MashapeException(EXCEPTION_JSONDECODE_REQUEST, EXCEPTION_SYSTEM_ERROR_CODE);
+			}
+			if (!empty($validationResponse->errors)) {
+				$error = $validationResponse->errors[0];
 				
 				// Reload the configuration if the server key is invalid
-				if ($retry == false && $error->code == 1005) {
+				if ($retry == true && $error->code == 1005) {
 					RESTConfigurationLoader::reloadConfiguration();
-					return $this->validateRequest($token, $method, true);
+					return $this->validateRequest($serverKey, $token, $method, $language, $version, false);
 				}
 				
 				throw new MashapeException($error->message, $error->code);

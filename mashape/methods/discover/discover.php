@@ -38,14 +38,14 @@ define("SIMPLE_MODE", "simple");
 
 class Discover implements iMethodHandler {
 
-	public function handle($instance, $parameters, $httpRequestMethod) {
+	public function handle($instance, $serverKey, $parameters, $httpRequestMethod) {
 		// Validate HTTP Verb
 		if (strtolower($httpRequestMethod) != "get") {
 			throw new MashapeException(EXCEPTION_INVALID_HTTPMETHOD, EXCEPTION_INVALID_HTTPMETHOD_CODE);
 		}
 		// Validate request
 		$configuration = RESTConfigurationLoader::reloadConfiguration();
-		if ($this->validateRequest($configuration) == false) {
+		if ($this->validateRequest($configuration, $serverKey) == false) {
 			throw new MashapeException(EXCEPTION_AUTH_INVALID_SERVERKEY, EXCEPTION_AUTH_INVALID_SERVERKEY_CODE);
 		}
 
@@ -73,18 +73,17 @@ class Discover implements iMethodHandler {
 		return $libraryLanguage . "," . $libraryVersion;
 	}
 
-	private function validateRequest($configuration) {
+	private function validateRequest($configuration, $serverKey) {
 		// If the request comes from the local computer, then don't require authorization,
 		// otherwise check the headers
 		if (HttpUtils::isLocal()) {
 			return true;
 		} else {
-			$serverkey =  $configuration->getServerkey();
 			$providedServerkey = HttpUtils::getHeader(HEADER_SERVER_KEY);
-			if (empty($serverkey)) {
+			if (empty($serverKey)) {
 				throw new MashapeException(EXCEPTION_EMPTY_SERVERKEY, EXCEPTION_XML_CODE);
 			}
-			if ($providedServerkey != null && md5($serverkey) == $providedServerkey) {
+			if ($providedServerkey != null && md5($serverKey) == $providedServerkey) {
 				return true;
 			}
 			return false;

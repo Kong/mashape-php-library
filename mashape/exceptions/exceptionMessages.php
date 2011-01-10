@@ -44,9 +44,10 @@ define("EXCEPTION_RESULT_EMPTY_NAME_OBJECT", "Please enter a result \"name\" att
 define("EXCEPTION_RESULT_INVALID_TYPE", "Invalid result type \"%s\" for method \"%s\"");
 define("EXCEPTION_OBJECT_EMPTY_CLASS", "Objects can't have an empty \"class\" attribute");
 define("EXCEPTION_OBJECT_DUPLICATE_CLASS", "An object with class \"%s\" has already been described");
+define("EXCEPTION_EMPTY_FIELDS", "Please add at least one field to object: %s");
 define("EXCEPTION_FIELD_EMPTY_NAME", "Fields can't have an empty \"name\" attribute");
 define("EXCEPTION_FIELD_NAME_DUPLICATE", "A field with name \"%s\" has already been described for object \"%s\"");
-define("EXCEPTION_EMPTY_SERVERKEY", "The server-key is missing from your XML configuration file");
+define("EXCEPTION_EMPTY_SERVERKEY", "The server-key is missing");
 define("EXCEPTION_MISSING_OBJECTS", "Missing XML description for objects: %s");
 
 define("EXCEPTION_INVALID_HTTPMETHOD_CODE", 1002);
@@ -59,10 +60,10 @@ define("EXCEPTION_NOTSUPPORTED_OPERATION_CODE", 1004);
 define("EXCEPTION_NOTSUPPORTED_OPERATION", "Operation not supported");
 
 define("EXCEPTION_AUTH_INVALID_SERVERKEY_CODE", 1005);
-define("EXCEPTION_AUTH_INVALID_SERVERKEY", "The request can't be authenticated because the server key sent for the request, and the one saved in the XML file, don't match");
+define("EXCEPTION_AUTH_INVALID_SERVERKEY", "The request can't be authenticated because the server key sent for the request, and the one set in your implementation, don't match");
 
 define("EXCEPTION_METHOD_NOTFOUND_CODE", 1006);
-define("EXCEPTION_METHOD_NOTFOUND", "The method requested was not found");
+define("EXCEPTION_METHOD_NOTFOUND", "The method requested was not found: \"%s\"");
 
 define("EXCEPTION_AUTH_INVALID_CODE", 1007);
 define("EXCEPTION_AUTH_INVALID", "The request has not been authorized");
@@ -75,6 +76,8 @@ define("EXCEPTION_REQUIRED_PARAMETER", "Missing required parameter \"%s\"");
 // http://api.mashape.com Error codes
 
 define("EXCEPTION_INSTANCE_NULL", "Please verify the class you're initializing with 'MashapeHandler::handleApi(..)' exists");
+define("EXCEPTION_EMPTY_REQUEST", "A request attempt was made to Mashape, but the response was empty. The firewall may be blocking outbound HTTP requests.");
+define("EXCEPTION_JSONDECODE_REQUEST", "Can't deserialize the response JSON from Mashape. The json_decode function is missing on server.");
 
 define("EXCEPTION_INVALID_APIKEY_CODE", 2001);
 define("EXCEPTION_EXCEEDED_LIMIT_CODE", 2002);

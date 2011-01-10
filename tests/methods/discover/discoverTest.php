@@ -32,7 +32,7 @@ class DiscoverTest extends PHPUnit_Framework_TestCase
 	function testDiscover() {
 		$discover = new Discover();
 		try {
-			$result = $discover->handle(new SampleAPI(), null, "post");
+			$result = $discover->handle(new SampleAPI(), "serverkey", null, "post");
 			$this->assertTrue(false);
 		} catch (Exception $e) {
 			if ($e instanceof MashapeException) {
