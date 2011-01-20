@@ -3,7 +3,7 @@
 /*
  * Mashape PHP library.
  *
- * Copyright (C) 2010 Mashape, Inc.
+ * Copyright (C) 2011 Mashape, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,9 +29,11 @@ require_once(dirname(__FILE__) . "/../../net/httpUtils.php");
 require_once(dirname(__FILE__) . "/../../init/init.php");
 require_once(dirname(__FILE__) . "/../../configuration/restConfigurationLoader.php");
 require_once(dirname(__FILE__) . "/helpers/callHelper.php");
+require_once(dirname(__FILE__) . "/helpers/routeHelper.php");
 
 define("METHOD", "_method");
 define("TOKEN", "_token");
+define("ROUTE", "_route");
 define("LANGUAGE", "_language");
 define("VERSION", "_version");
 define("QUERY_PARAM_TOKEN", "token");
@@ -48,7 +50,15 @@ class Call implements iMethodHandler {
 		$this->reloadConfiguration();
 
 		$methodName = (isset($parameters[METHOD])) ? $parameters[METHOD] : null;
-		$method = RESTConfigurationLoader::getMethod($methodName);
+		$method = null;
+		if (empty($methodName)) {
+			// Find route
+			$requestUri = (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
+			$method = findRoute($requestUri, $parameters);
+		} else {
+			$method = RESTConfigurationLoader::getMethod($methodName);
+		}
+		
 		if (empty($method)) {
 			throw new MashapeException(sprintf(EXCEPTION_METHOD_NOTFOUND, $methodName), EXCEPTION_METHOD_NOTFOUND_CODE);
 		}

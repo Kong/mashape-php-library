@@ -3,7 +3,7 @@
 /*
  * Mashape PHP library.
  *
- * Copyright (C) 2010 Mashape, Inc.
+ * Copyright (C) 2011 Mashape, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,6 +32,7 @@ require_once(dirname(__FILE__) . "/../restMethod.php");
 define("XML_METHOD", "method");
 define("XML_METHOD_NAME", "name");
 define("XML_METHOD_HTTP", "http");
+define("XML_METHOD_ROUTE", "route");
 
 define("XML_RESULT", "result");
 define("XML_RESULT_ARRAY", "array");
@@ -59,6 +60,17 @@ function loadMethodsFromXML($xmlParser) {
 			$http = strtolower($http);
 			if ($http != "get" && $http != "post" && $http != "put" && $http != "delete") {
 				throw new MashapeException(sprintf(EXCEPTION_METHOD_INVALID_HTTP, $http),EXCEPTION_XML_CODE);
+			}
+		}
+		
+		$route = (XmlParserUtils::existAttribute($xmlMethod, XML_METHOD_ROUTE)) ? $xmlMethod->tagAttrs[XML_METHOD_ROUTE] : null;
+		if (!empty($route)) {
+			if (!validateRoute($route)) {
+				throw new MashapeException(sprintf(EXCEPTION_METHOD_INVALID_ROUTE, $route),EXCEPTION_XML_CODE);
+			} else {
+				if (existRoute($methods, $route)) {
+					throw new MashapeException(sprintf(EXCEPTION_METHOD_DUPLICATE_ROUTE, $route), EXCEPTION_XML_CODE);
+				}
 			}
 		}
 
@@ -93,7 +105,7 @@ function loadMethodsFromXML($xmlParser) {
 				if (empty($resultName)) {
 					throw new MashapeException(sprintf(EXCEPTION_RESULT_EMPTY_NAME_SIMPLE, $name), EXCEPTION_XML_CODE);
 				}
-			} else if (strtolower($type=="object")) {
+			} else if (strtolower($type=="complex")) {
 				$object = (XmlParserUtils::existAttribute($resultNode, XML_RESULT_NAME)) ? $resultNode->tagAttrs[XML_RESULT_NAME] : null;
 				if (empty($object)) {
 					throw new MashapeException(sprintf(EXCEPTION_RESULT_EMPTY_NAME_OBJECT, $name), EXCEPTION_XML_CODE);
@@ -111,12 +123,30 @@ function loadMethodsFromXML($xmlParser) {
 		$method->setResult($resultName);
 		$method->setArray($array);
 		$method->setHttp($http);
+		$method->setRoute($route);
 
 		//Save method
 		array_push($methods, $method);
 
 	}
 	return $methods;
+}
+
+function validateRoute($route) {
+	if (preg_match("/^(\/\{\w+\})*\/\w+(\/\w+)*(\/\{\w+\})*(\/\w+)*(\/\{\w+\})*$/", $route)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function existRoute($methods, $route) {
+	foreach ($methods as $method) {
+		if ($method->getRoute() == $route) {
+			return true;
+		}
+	}
+	return false;
 }
 
 function existMethod($methods, $name) {

@@ -3,7 +3,7 @@
 /*
  * Mashape PHP library.
  *
- * Copyright (C) 2010 Mashape, Inc.
+ * Copyright (C) 2011 Mashape, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,7 @@ require_once(dirname(__FILE__) . "/discover/discover.php");
 require_once(dirname(__FILE__) . "/call/call.php");
 
 define("OPERATION", "_op");
+define("CALLBACK", "callback");
 
 class MashapeHandler {
 
@@ -46,6 +47,14 @@ class MashapeHandler {
 			$result[$key] = $source[$key];
 		}
 		return $result;
+	}
+
+	private static function validateCallback($callback) {
+		if (preg_match("/^\w+$/", $callback)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public static function handleAPI($instance, $serverKey) {
@@ -86,8 +95,18 @@ class MashapeHandler {
 					default:
 						throw new MashapeException(EXCEPTION_NOTSUPPORTED_OPERATION, EXCEPTION_NOTSUPPORTED_OPERATION_CODE);
 				}
-				// Print the output
-				echo $result;
+
+				$jsonpCallback = (isset($params[CALLBACK])) ? $params[CALLBACK] : null;
+				if (empty($jsonpCallback)) {
+					// Print the output
+					echo $result;
+				} else {
+					if (self::validateCallback($jsonpCallback)) {
+						echo $jsonpCallback . '(' . $result . ')';
+					} else {
+						throw new MashapeException(EXCEPTION_INVALID_CALLBACK, EXCEPTION_SYSTEM_ERROR_CODE);
+					}
+				}
 
 			} else {
 				// Operation not supported

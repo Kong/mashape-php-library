@@ -3,7 +3,7 @@
 /*
  * Mashape PHP library.
  *
- * Copyright (C) 2010 Mashape, Inc.
+ * Copyright (C) 2011 Mashape, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,13 +31,16 @@ define("EXCEPTION_UNKNOWN_OBJECT", "The result can't be serialized because it's 
 
 define("EXCEPTION_XML_CODE", 1001);
 // Error messages for XML configuration
-define("EXCEPTION_CONFIGURATION_FILE_NOTFOUND", "Can't find the XML configuration file (path: \"%s\"). Please check that the path is valid and it exists.");
+define("EXCEPTION_CONFIGURATION_FILE_NOTFOUND", "Can't find the XML configuration file (path: \"%s\"). Please check that the path is valid and it exists");
 define("EXCEPTION_METHOD_EMPTY_NAME", "Methods can't have an empty \"name\" attribute");
 define("EXCEPTION_METHOD_DUPLICATE_NAME", "A method with name \"%s\" has already been described");
+define("EXCEPTION_METHOD_DUPLICATE_ROUTE", "A method with route \"%s\" has already been described");
 define("EXCEPTION_METHOD_EMPTY_HTTP", "Methods can't have an empty \"http\" attribute");
-define("EXCEPTION_METHOD_INVALID_HTTP", "Http method \"%s\" not supported.");
-define("EXCEPTION_RESULT_MULTIPLE", "The method \"%s\" has multiple result nodes. Only one is allowed.");
-define("EXCEPTION_RESULT_MISSING", "The method \"%s\" requires a result child element.");
+define("EXCEPTION_METHOD_INVALID_HTTP", "Http method \"%s\" not supported");
+define("EXCEPTION_METHOD_INVALID_ROUTE", "Route \"%s\" is invalid");
+define("EXCEPTION_METHOD_INVALID_ROUTE_PARAM", "Can't find the route param \"%s\" in the method signature");
+define("EXCEPTION_RESULT_MULTIPLE", "The method \"%s\" has multiple result nodes. Only one is allowed");
+define("EXCEPTION_RESULT_MISSING", "The method \"%s\" requires a result child element");
 define("EXCEPTION_RESULT_EMPTY_TYPE", "Please enter a result \"type\" attribute for method \"%s\"");
 define("EXCEPTION_RESULT_EMPTY_NAME_SIMPLE", "Please enter a result \"name\" attribute for method \"%s\", that is the name of the field that will contain the result value");
 define("EXCEPTION_RESULT_EMPTY_NAME_OBJECT", "Please enter a result \"name\" attribute for method \"%s\", that is the class name belonging to the object that will represent the result value");
@@ -76,8 +79,9 @@ define("EXCEPTION_REQUIRED_PARAMETER", "Missing required parameter \"%s\"");
 // http://api.mashape.com Error codes
 
 define("EXCEPTION_INSTANCE_NULL", "Please verify the class you're initializing with 'MashapeHandler::handleApi(..)' exists");
-define("EXCEPTION_EMPTY_REQUEST", "A request attempt was made to Mashape, but the response was empty. The firewall may be blocking outbound HTTP requests.");
-define("EXCEPTION_JSONDECODE_REQUEST", "Can't deserialize the response JSON from Mashape. The json_decode function is missing on server.");
+define("EXCEPTION_EMPTY_REQUEST", "A request attempt was made to Mashape, but the response was empty. The firewall may be blocking outbound HTTP requests");
+define("EXCEPTION_JSONDECODE_REQUEST", "Can't deserialize the response JSON from Mashape. The json_decode function is missing on server");
+define("EXCEPTION_INVALID_CALLBACK", "Invalid function name set as a callback");
 
 define("EXCEPTION_INVALID_APIKEY_CODE", 2001);
 define("EXCEPTION_EXCEEDED_LIMIT_CODE", 2002);

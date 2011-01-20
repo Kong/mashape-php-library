@@ -3,7 +3,7 @@
 /*
  * Mashape PHP library.
  *
- * Copyright (C) 2010 Mashape, Inc.
+ * Copyright (C) 2011 Mashape, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -45,6 +45,12 @@ class DiscoverTest extends PHPUnit_Framework_TestCase
 }
 
 class SampleAPI extends MashapeRestAPI {
+
+	// Don't edit the constructor code
+	public function __construct() {
+		parent::__construct(dirname(__FILE__));
+	}
+
 	public function sayHello($name) {
 		return "Hi, " . $name;
 	}

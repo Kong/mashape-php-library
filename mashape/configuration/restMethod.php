@@ -3,7 +3,7 @@
 /*
  * Mashape PHP library.
  *
- * Copyright (C) 2010 Mashape, Inc.
+ * Copyright (C) 2011 Mashape, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ class RESTMethod {
 	private $name;
 	private $array;
 	private $http;
+	private $route;
 
 	public function getObject() {
 		return $this->object;
@@ -43,8 +44,14 @@ class RESTMethod {
 	public function getHttp() {
 		return $this->http;
 	}
+	public function getRoute() {
+		return $this->route;
+	}
 	public function setObject($x) {
 		$this->object = $x;
+	}
+	public function setRoute($x) {
+		$this->route = $x;
 	}
 	public function setResult($x) {
 		$this->result = $x;

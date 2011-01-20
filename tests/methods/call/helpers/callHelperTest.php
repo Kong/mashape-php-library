@@ -3,7 +3,7 @@
 /*
  * Mashape PHP library.
  *
- * Copyright (C) 2010 Mashape, Inc.
+ * Copyright (C) 2011 Mashape, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -99,7 +99,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 		$method->setName("touchComplex7");
 		$method->setObject("ClassThree");
 		$this->assertEquals('{"errors":[],"result":{"field1":"this is field1","field2":["this","is","field",2,true],"field4":[{"field1":"child value 1","field2":"child value 2"},{"field1":"second child value 1","field2":"second child value 2"}]}}', doCall($method, null, new NewSampleAPI()));
-		
+
 		RESTConfigurationLoader::reloadConfiguration(dirname(__FILE__) . "/test.xml");
 		$method = new RESTMethod();
 		$method->setName("touchComplex8");
@@ -107,7 +107,7 @@ class CallTest extends PHPUnit_Framework_TestCase
 		$method->setArray(true);
 		$this->assertEquals('{"errors":[],"result":[{"field1":"value1","field2":"value2"},{"field1":"second value1","field2":"second value2"},{"field1":"third value1","field2":"third value2"}]}', doCall($method, null, new NewSampleAPI()));
 	}
-	
+
 	function testError() {
 		RESTConfigurationLoader::reloadConfiguration(dirname(__FILE__) . "/test7.xml");
 		$method = new RESTMethod();
@@ -152,6 +152,11 @@ class ClassThree {
 }
 
 class NewSampleAPI extends MashapeRestAPI {
+
+	// Don't edit the constructor code
+	public function __construct() {
+		parent::__construct(dirname(__FILE__));
+	}
 
 	public function touchNull() {
 		return null;
@@ -243,7 +248,7 @@ class NewSampleAPI extends MashapeRestAPI {
 		$result->f4 = $childs;
 		return $result;
 	}
-	
+
 	public function touchComplex8() {
 		$result = array();
 		$obj = new ClassOne();
@@ -254,15 +259,15 @@ class NewSampleAPI extends MashapeRestAPI {
 		$obj->field1 = "second value1";
 		$obj->field2 = "second value2";
 		array_push($result, $obj);
-		
+
 		$obj = new ClassOne();
 		$obj->field1 = "third value1";
 		$obj->field2 = "third value2";
 		array_push($result, $obj);
-		
+
 		return $result;
 	}
-	
+
 	public function touchError() {
 		parent::addError(1, "custom message");
 		return null;

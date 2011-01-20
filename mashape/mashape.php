@@ -3,7 +3,7 @@
 /*
  * Mashape PHP library.
  *
- * Copyright (C) 2010 Mashape, Inc.
+ * Copyright (C) 2011 Mashape, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,11 @@ require_once (dirname(__FILE__) . "/methods/handler.php");
 
 abstract class MashapeRestAPI {
 	private static $errors;
+	public $dirPath;
+	
+	protected function __construct($dirPath) {
+       $this->dirPath = $dirPath;
+    }
 
 	protected static function addError($code, $message) {
 		if (empty(self::$errors)) {

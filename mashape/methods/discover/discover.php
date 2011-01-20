@@ -3,7 +3,7 @@
 /*
  * Mashape PHP library.
  *
- * Copyright (C) 2010 Mashape, Inc.
+ * Copyright (C) 2011 Mashape, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ require_once(dirname(__FILE__) . "/../../net/httpUtils.php");
 require_once(dirname(__FILE__) . "/../../init/init.php");
 require_once(dirname(__FILE__) . "/helpers/discoverMethods.php");
 require_once(dirname(__FILE__) . "/helpers/discoverObjects.php");
+require_once(dirname(__FILE__) . "/helpers/updateHtaccess.php");
 
 define("HEADER_SERVER_KEY", "X-Mashape-Server-Key");
 
@@ -58,6 +59,10 @@ class Discover implements iMethodHandler {
 			$methods = discoverMethods($instance, $configuration, $objectsFound);
 			$objects = discoverObjects($configuration, $objectsFound);
 			$resultJson .= $methods . "," . $objects . "," . $this->getSimpleInfo();
+			
+			// Update the .htaccess file with the new route settings
+			updateHtaccess($instance, $configuration->getMethods());
+			
 		} else {
 			$resultJson .= $this->getSimpleInfo();
 		}
