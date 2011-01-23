@@ -7,16 +7,16 @@ define("SERVER_KEY", "the-server-key");
 
 class ComponentAPI extends MashapeRestAPI
 {
-    // Don't edit the constructor code
-    public function __construct() {
-       parent::__construct(dirname(__FILE__));
-    }
-    
-    // TODO: Declare your API functions below
-    public function sayHello($name) {
+	// Don't edit the constructor code
+	public function __construct() {
+		parent::__construct(dirname(__FILE__));
+	}
+
+	// TODO: Declare your API functions below
+	public function sayHello($name) {
 		return "Hello " . $name . "!";
-    }
-    
+	}
+
 }
 
 // Init the library

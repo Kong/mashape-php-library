@@ -29,16 +29,13 @@ require_once(dirname(__FILE__) . "/validateParameters.php");
 require_once(dirname(__FILE__) . "/serializeMethodResult.php");
 
 function doCall($method, $parameters, $instance) {
-	$hasRequiredParams = validateCallParameters($method, $parameters, $instance);
+	$callParameters = validateCallParameters($method, $parameters, $instance);
 	
 	$reflectedClass = new ReflectionClass(get_class($instance));
 	$reflectedMethod = $reflectedClass->getMethod($method->getName());
 	$result;
-	if (!$hasRequiredParams) {
-		$result = $reflectedMethod->invoke($instance);
-	} else {
-		$result = $reflectedMethod->invokeArgs($instance, $parameters);
-	}
+	
+	$result = $reflectedMethod->invokeArgs($instance, $callParameters);
 
 	$resultJson = '{';
 

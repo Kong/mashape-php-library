@@ -28,7 +28,7 @@ require_once(dirname(__FILE__) . "/../../../exceptions/mashapeException.php");
 require_once(dirname(__FILE__) . "/../../../configuration/restConfigurationLoader.php");
 require_once(dirname(__FILE__) . "/../../../utils/arrayUtils.php");
 
-function validateCallParameters($method, &$parameters, $instance) {
+function validateCallParameters($method, $parameters, $instance) {
 	$reflectedClass = new ReflectionClass(get_class($instance));
 	$reflectedMethod = $reflectedClass->getMethod($method->getName());
 	$reflectedParameters = $reflectedMethod->getParameters();
@@ -60,6 +60,8 @@ function validateCallParameters($method, &$parameters, $instance) {
 			}
 		}
 	}
+	
+	$callParameters = array();
 
 	// Sort parameters
 	if (!empty($reflectedParameters)) {
@@ -75,10 +77,10 @@ function validateCallParameters($method, &$parameters, $instance) {
 			}
 		}
 
-		$parameters = $sorted;
+		$callParameters = $sorted;
 	}
 
-	return $hasRequiredParams;
+	return $callParameters;
 }
 
 ?>
