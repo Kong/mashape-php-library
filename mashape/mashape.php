@@ -31,10 +31,10 @@ require_once (dirname(__FILE__) . "/methods/handler.php");
 abstract class MashapeRestAPI {
 	private static $errors;
 	public $dirPath;
-	
+
 	protected function __construct($dirPath) {
-       $this->dirPath = $dirPath;
-    }
+		$this->dirPath = $dirPath;
+	}
 
 	protected static function addError($code, $message) {
 		if (empty(self::$errors)) {
@@ -44,10 +44,17 @@ abstract class MashapeRestAPI {
 		array_push(self::$errors, $e);
 	}
 
+	public static function parseBoolean($value) {
+		if ($value == "1" || strtolower($value) === "true") {
+			return true;
+		}
+		return false;
+	}
+
 	public static function clearErrors() {
 		self::$errors = array();
 	}
-	
+
 	public static function hasErrors() {
 		if (empty(self::$errors)) {
 			return false;
