@@ -31,7 +31,10 @@ function updateHtaccess($instance, $methods) {
 	$fileParts = Explode('/', $_SERVER["PHP_SELF"]);
 	$scriptName = $fileParts[count($fileParts) - 1];
 	
-	$fhandle = fopen($implPath . "/.htaccess", "w");
+	$fhandle = @fopen($implPath . "/.htaccess", "w");
+	if ($fhandle == null) {
+		throw new MashapeException(sprintf(EXCEPTION_INVALID_PERMISSION, $implPath . "/.htaccess"), EXCEPTION_SYSTEM_ERROR_CODE);
+	}
 	fwrite($fhandle, "RewriteEngine On\n");
 	unset($fileParts[count($fileParts) - 1]);
 	$basePath = (count($fileParts) == 1 && empty($fileParts[0])) ? "/" : implode("/", $fileParts);

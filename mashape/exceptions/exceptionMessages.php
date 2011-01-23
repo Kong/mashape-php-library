@@ -83,6 +83,7 @@ define("EXCEPTION_INSTANCE_NULL", "Please verify the class you're initializing w
 define("EXCEPTION_EMPTY_REQUEST", "A request attempt was made to Mashape, but the response was empty. The firewall may be blocking outbound HTTP requests");
 define("EXCEPTION_JSONDECODE_REQUEST", "Can't deserialize the response JSON from Mashape. The json_decode function is missing on server");
 define("EXCEPTION_INVALID_CALLBACK", "Invalid function name set as a callback");
+define("EXCEPTION_INVALID_PERMISSION", "File permission denied: can't create and write to the file %s");
 
 define("EXCEPTION_INVALID_APIKEY_CODE", 2001);
 define("EXCEPTION_EXCEEDED_LIMIT_CODE", 2002);
