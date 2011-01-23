@@ -55,6 +55,7 @@ class Call implements iMethodHandler {
 			// Find route
 			$requestUri = (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
 			$method = findRoute($requestUri, $parameters);
+			$methodName = $method->getName();
 		} else {
 			$method = RESTConfigurationLoader::getMethod($methodName);
 		}
