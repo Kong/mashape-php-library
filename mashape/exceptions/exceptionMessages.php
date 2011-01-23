@@ -39,6 +39,7 @@ define("EXCEPTION_METHOD_EMPTY_HTTP", "Methods can't have an empty \"http\" attr
 define("EXCEPTION_METHOD_INVALID_HTTP", "Http method \"%s\" not supported");
 define("EXCEPTION_METHOD_INVALID_ROUTE", "Route \"%s\" is invalid");
 define("EXCEPTION_METHOD_INVALID_ROUTE_PARAM", "Can't find the route param \"%s\" in the method signature");
+define("EXCEPTION_METHOD_OPTIONAL_ROUTE_PARAM", "You can't set the optional parameter \"%s\" belonging to the method \"%s\" as a route parameter. Optional parameters should never been included in a route URL");
 define("EXCEPTION_RESULT_MULTIPLE", "The method \"%s\" has multiple result nodes. Only one is allowed");
 define("EXCEPTION_RESULT_MISSING", "The method \"%s\" requires a result child element");
 define("EXCEPTION_RESULT_EMPTY_TYPE", "Please enter a result \"type\" attribute for method \"%s\"");

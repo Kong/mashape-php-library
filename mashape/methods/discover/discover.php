@@ -53,7 +53,7 @@ class Discover implements iMethodHandler {
 		$resultJson = "{";
 
 		$mode = (isset($parameters[MODE])) ? $parameters[MODE] : null;
-
+		
 		if ($mode == null || $mode != SIMPLE_MODE) {
 			$objectsFound = array();
 			$methods = discoverMethods($instance, $configuration, $objectsFound);

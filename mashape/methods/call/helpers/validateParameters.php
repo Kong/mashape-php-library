@@ -70,6 +70,8 @@ function validateCallParameters($method, &$parameters, $instance) {
 			
 			if (isset($parameters[$reflectedParameterName])) {
 				$sorted[$reflectedParameterName] = $parameters[$reflectedParameterName];
+			} else {
+				$sorted[$reflectedParameterName] = $reflectedParameter->getDefaultValue();
 			}
 		}
 

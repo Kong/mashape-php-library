@@ -91,6 +91,9 @@ function serializeParameters($method, $instance) {
 				for ($i=0;$i<count($reflectedParameters);$i++) {
 					$param = $reflectedParameters[$i];
 					if ($placeHolder == $param->name) {
+						if ($param->isDefaultValueAvailable()) {
+							throw new MashapeException(sprintf(EXCEPTION_METHOD_OPTIONAL_ROUTE_PARAM, $param->name, $method->getName()),EXCEPTION_XML_CODE);
+						}
 						$exist = true;
 						break;
 					}
