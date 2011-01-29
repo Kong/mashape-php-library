@@ -24,7 +24,7 @@
  *
  */
 
-function updateHtaccess($instance, $methods) {
+function updateHtaccess($instance) {
 	$reflectedClass = new ReflectionClass(get_class($instance));
 	$implPath = $reflectedClass->getParentClass()->getProperty("dirPath")->getValue($instance);
 

@@ -47,24 +47,13 @@ class Call implements iMethodHandler {
 
 	public function handle($instance, $serverKey, $parameters, $httpRequestMethod) {
 		// If the request comes from local, reload the configuration
-		$this->reloadConfiguration();
+		$this->reloadConfiguration($serverKey);
 
-		$methodName = (isset($parameters[METHOD])) ? $parameters[METHOD] : null;
+		$methodName = null;
 		$method = null;
-		if (empty($methodName)) {
-			// Find route
-			$requestUri = (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
-			$method = findRoute($requestUri, $parameters);
-			if (!empty($method)) {
-				$methodName = $method->getName();
-			}
-		} else {
-			$method = RESTConfigurationLoader::getMethod($methodName);
-		}
 		
-		if (empty($method)) {
-			throw new MashapeException(sprintf(EXCEPTION_METHOD_NOTFOUND, $methodName), EXCEPTION_METHOD_NOTFOUND_CODE);
-		}
+		$this->findMethod($parameters, $methodName, $method, $serverKey);
+		
 		if (strtolower($method->getHttp()) != strtolower($httpRequestMethod)) {
 			throw new MashapeException(EXCEPTION_INVALID_HTTPMETHOD, EXCEPTION_INVALID_HTTPMETHOD_CODE);
 		}
@@ -72,27 +61,45 @@ class Call implements iMethodHandler {
 		unset($parameters[METHOD]); // Remove the method name from the params
 		$token = (isset($parameters[TOKEN])) ? $parameters[TOKEN] : null;
 		unset($parameters[TOKEN]); // remove the token parameter
-		
+
 		$language = (isset($parameters[LANGUAGE])) ? $parameters[LANGUAGE] : null;
 		unset($parameters[LANGUAGE]); // remove the language parameter
 		$version = (isset($parameters[VERSION])) ? $parameters[VERSION] : null;
 		unset($parameters[VERSION]); // remove the version parameter
 
 		//Validate Request
-		if (self::validateRequest($serverKey, $token, $methodName, $language, $version, true)) {
-			return doCall($method, $parameters, $instance);
+		if (self::validateRequest($serverKey, $token, $methodName, $language, $version)) {
+			return doCall($method, $parameters, $instance, $serverKey);
 		} else {
 			throw new MashapeException(EXCEPTION_AUTH_INVALID, EXCEPTION_AUTH_INVALID_CODE);
 		}
 	}
 
-	private function reloadConfiguration() {
-		if (HttpUtils::isLocal()) {
-			RESTConfigurationLoader::reloadConfiguration();
+	private function findMethod(&$parameters, &$methodName, &$method, $serverKey) {
+		$methodName = (isset($parameters[METHOD])) ? $parameters[METHOD] : null;
+		$method = null;
+		if (empty($methodName)) {
+			// Find route
+			$requestUri = (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
+			$method = findRoute($requestUri, $parameters, $serverKey);
+			if (!empty($method)) {
+				$methodName = $method->getName();
+			}
+		} else {
+			$method = RESTConfigurationLoader::getMethod($methodName, $serverKey);
+		}
+		if (empty($method)) {
+			throw new MashapeException(sprintf(EXCEPTION_METHOD_NOTFOUND, $methodName), EXCEPTION_METHOD_NOTFOUND_CODE);
 		}
 	}
 
-	private function validateRequest($serverKey, $token, $method, $language, $version, $retry) {
+	private function reloadConfiguration($serverKey) {
+		if (HttpUtils::isLocal()) {
+			RESTConfigurationLoader::reloadConfiguration($serverKey);
+		}
+	}
+
+	private function validateRequest($serverKey, $token, $method, $language, $version) {
 		// If the request comes from the local computer, then don't require authorization,
 		// otherwise check the headers
 		if (HttpUtils::isLocal()) {
@@ -112,13 +119,6 @@ class Call implements iMethodHandler {
 			}
 			if (!empty($validationResponse->errors)) {
 				$error = $validationResponse->errors[0];
-				
-				// Reload the configuration if the server key is invalid
-				if ($retry == true && $error->code == 1005) {
-					RESTConfigurationLoader::reloadConfiguration();
-					return $this->validateRequest($serverKey, $token, $method, $language, $version, false);
-				}
-				
 				throw new MashapeException($error->message, $error->code);
 			}
 			$authorization = $validationResponse->authorized;

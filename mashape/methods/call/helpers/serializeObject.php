@@ -28,7 +28,7 @@ require_once(dirname(__FILE__) . "/../../../exceptions/mashapeException.php");
 require_once(dirname(__FILE__) . "/../../../configuration/restConfigurationLoader.php");
 require_once(dirname(__FILE__) . "/../../../json/jsonUtils.php");
 
-function serializeObject($result, $instance, $isSimpleResult) {
+function serializeObject($result, $instance, $isSimpleResult, $serverKey) {
 	$json = "";
 	if ($isSimpleResult) {
 		// It's a simple result, just serialize it
@@ -38,7 +38,7 @@ function serializeObject($result, $instance, $isSimpleResult) {
 		$className = get_class($result);
 
 		$reflectedClass = new ReflectionClass($className);
-		$xmlObject = RESTConfigurationLoader::getObject($className);
+		$xmlObject = RESTConfigurationLoader::getObject($className, $serverKey);
 
 		if (empty($xmlObject)) {
 			throw new MashapeException(sprintf(EXCEPTION_UNKNOWN_OBJECT, $className), EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);
@@ -79,7 +79,7 @@ function serializeObject($result, $instance, $isSimpleResult) {
 					if (is_array($fieldValue)) {
 
 						for ($t=0;$t<count($fieldValue);$t++) {
-							$json .= serializeObject($fieldValue[$t], $instance, $isSimpleField) . ",";
+							$json .= serializeObject($fieldValue[$t], $instance, $isSimpleField, $serverKey) . ",";
 						}
 						$json = JsonUtils::removeLastChar($fieldValue, $json);
 					} else {
@@ -92,7 +92,7 @@ function serializeObject($result, $instance, $isSimpleResult) {
 						// The result it's an array although it was described IT WAS NOT an array
 						throw new MashapeException(sprintf(EXCEPTION_UNEXPECTED_ARRAY_RESULT, $fieldName, $className), EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);
 					} else {
-						$json .= serializeObject($fieldValue, $instance, $isSimpleField);
+						$json .= serializeObject($fieldValue, $instance, $isSimpleField, $serverKey);
 					}
 				}
 			}

@@ -27,10 +27,10 @@
 require_once(dirname(__FILE__) . "/../../../configuration/restConfigurationLoader.php");
 require_once(dirname(__FILE__) . "/../../../utils/routeUtils.php");
 
-function findRoute($requestUri, &$routeParameters) {
+function findRoute($requestUri, &$routeParameters, $serverKey) {
 	$routeMethod = null;
 
-	$configuration = RESTConfigurationLoader::loadConfiguration();
+	$configuration = RESTConfigurationLoader::loadConfiguration($serverKey);
 	$methods = $configuration->getMethods();
 
 	// Remove any folder before the route URL

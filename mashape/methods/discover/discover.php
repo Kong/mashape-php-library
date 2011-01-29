@@ -45,8 +45,7 @@ class Discover implements iMethodHandler {
 			throw new MashapeException(EXCEPTION_INVALID_HTTPMETHOD, EXCEPTION_INVALID_HTTPMETHOD_CODE);
 		}
 		// Validate request
-		$configuration = RESTConfigurationLoader::reloadConfiguration();
-		if ($this->validateRequest($configuration, $serverKey) == false) {
+		if ($this->validateRequest($serverKey) == false) {
 			throw new MashapeException(EXCEPTION_AUTH_INVALID_SERVERKEY, EXCEPTION_AUTH_INVALID_SERVERKEY_CODE);
 		}
 
@@ -54,6 +53,7 @@ class Discover implements iMethodHandler {
 
 		$mode = (isset($parameters[MODE])) ? $parameters[MODE] : null;
 		
+		$configuration = RESTConfigurationLoader::reloadConfiguration($serverKey);
 		if ($mode == null || $mode != SIMPLE_MODE) {
 			$objectsFound = array();
 			$methods = discoverMethods($instance, $configuration, $objectsFound);
@@ -61,7 +61,7 @@ class Discover implements iMethodHandler {
 			$resultJson .= $methods . "," . $objects . "," . $this->getSimpleInfo();
 			
 			// Update the .htaccess file with the new route settings
-			updateHtaccess($instance, $configuration->getMethods());
+			updateHtaccess($instance);
 			
 		} else {
 			$resultJson .= $this->getSimpleInfo();
@@ -78,7 +78,7 @@ class Discover implements iMethodHandler {
 		return $libraryLanguage . "," . $libraryVersion;
 	}
 
-	private function validateRequest($configuration, $serverKey) {
+	private function validateRequest($serverKey) {
 		// If the request comes from the local computer, then don't require authorization,
 		// otherwise check the headers
 		if (HttpUtils::isLocal()) {

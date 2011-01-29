@@ -28,7 +28,7 @@ require_once(dirname(__FILE__) . "/../../../json/jsonUtils.php");
 require_once(dirname(__FILE__) . "/validateParameters.php");
 require_once(dirname(__FILE__) . "/serializeMethodResult.php");
 
-function doCall($method, $parameters, $instance) {
+function doCall($method, $parameters, $instance, $serverKey) {
 	$callParameters = validateCallParameters($method, $parameters, $instance);
 	
 	$reflectedClass = new ReflectionClass(get_class($instance));
@@ -57,7 +57,7 @@ function doCall($method, $parameters, $instance) {
 
 	$resultJson .= ']';
 	$resultJson .= ',"result":';
-	$resultJson .= serializeMethodResult($method, $result, $instance);
+	$resultJson .= serializeMethodResult($method, $result, $instance, $serverKey);
 	$resultJson .= '}';
 	return $resultJson;
 }

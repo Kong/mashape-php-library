@@ -29,12 +29,12 @@ require_once(dirname(__FILE__) . "/../../../configuration/restConfigurationLoade
 require_once(dirname(__FILE__) . "/../../../json/jsonUtils.php");
 require_once(dirname(__FILE__) . "/serializeObject.php");
 
-function serializeMethodResult($method, $result, $instance) {
+function serializeMethodResult($method, $result, $instance, $serverKey) {
 	$json = "";
 
 	$isSimpleResult = isSimpleResult($method);
 
-	if ($result == null) {
+	if ($result === null) {
 		if($isSimpleResult) {
 			$json .= '{"' . $method->getResult() . '":null}';
 		} else {
@@ -48,7 +48,7 @@ function serializeMethodResult($method, $result, $instance) {
 			$json .= "[";
 			if (is_array($result)) {
 				for ($i=0;$i<count($result);$i++) {
-					$json .=  serializeObject($result[$i], $instance, $isSimpleResult) . ",";
+					$json .=  serializeObject($result[$i], $instance, $isSimpleResult, $serverKey) . ",";
 				}
 				$json = JsonUtils::removeLastChar($result, $json);
 			} else {
@@ -61,7 +61,7 @@ function serializeMethodResult($method, $result, $instance) {
 				// The result it's an array although it was described IT WAS NOT an array
 				throw new MashapeException(EXCEPTION_UNEXPECTED_ARRAY_RESULT, EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);
 			} else {
-				$json .= serializeObject($result, $instance, $isSimpleResult);
+				$json .= serializeObject($result, $instance, $isSimpleResult, $serverKey);
 			}
 		}
 		if ($isSimpleResult) {

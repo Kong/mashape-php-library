@@ -28,6 +28,8 @@ require_once(dirname(__FILE__) . "/../../../../mashape/configuration/restMethod.
 require_once(dirname(__FILE__) . "/../../../../mashape/mashape.php");
 require_once(dirname(__FILE__) . "/../../../../mashape/methods/call/helpers/callHelper.php");
 
+define("SERVER_KEY", "serverkey");
+
 class CallTest extends PHPUnit_Framework_TestCase
 {
 	function testNull() {
@@ -35,86 +37,86 @@ class CallTest extends PHPUnit_Framework_TestCase
 		$method = new RESTMethod();
 		$method->setName("touchNull");
 		$method->setResult("message");
-		$this->assertEquals('{"errors":[],"result":{"message":null}}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[],"result":{"message":null}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 
 		// Test NULL Object
 		$method = new RESTMethod();
 		$method->setName("touchNull");
 		$method->setObject("Ret");
-		$this->assertEquals('{"errors":[],"result":null}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[],"result":null}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 	}
 
 	function testSimple() {
 		$method = new RESTMethod();
 		$method->setName("touchSimple");
 		$method->setResult("message");
-		$this->assertEquals('{"errors":[],"result":{"message":"simpleValue"}}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[],"result":{"message":"simpleValue"}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 
 		$method = new RESTMethod();
 		$method->setName("touchSimpleArray");
 		$method->setResult("message");
 		$method->setArray(true);
-		$this->assertEquals('{"errors":[],"result":{"message":["value1",3,"value3"]}}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[],"result":{"message":["value1",3,"value3"]}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 	}
 
 	function testComplex() {
-		RESTConfigurationLoader::reloadConfiguration(dirname(__FILE__) . "/test.xml");
+		RESTConfigurationLoader::reloadConfiguration(SERVER_KEY, dirname(__FILE__) . "/test.xml");
 		$method = new RESTMethod();
 		$method->setName("touchComplex");
 		$method->setObject("ClassOne");
-		$this->assertEquals('{"errors":[],"result":{"field1":"value1","field2":"value2"}}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[],"result":{"field1":"value1","field2":"value2"}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 
-		RESTConfigurationLoader::reloadConfiguration(dirname(__FILE__) . "/test2.xml");
+		RESTConfigurationLoader::reloadConfiguration(SERVER_KEY, dirname(__FILE__) . "/test2.xml");
 		$method = new RESTMethod();
 		$method->setName("touchComplex2");
 		$method->setObject("ClassOne");
-		$this->assertEquals('{"errors":[],"result":{"field2":"value2"}}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[],"result":{"field2":"value2"}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 
-		RESTConfigurationLoader::reloadConfiguration(dirname(__FILE__) . "/test3.xml");
+		RESTConfigurationLoader::reloadConfiguration(SERVER_KEY, dirname(__FILE__) . "/test3.xml");
 		$method = new RESTMethod();
 		$method->setName("touchComplex3");
 		$method->setObject("ClassOne");
-		$this->assertEquals('{"errors":[],"result":{"field1":"value1","field2":{"childField1":"child value 1","childField2":"child value 2"}}}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[],"result":{"field1":"value1","field2":{"childField1":"child value 1","childField2":"child value 2"}}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 
-		RESTConfigurationLoader::reloadConfiguration(dirname(__FILE__) . "/test3.xml");
+		RESTConfigurationLoader::reloadConfiguration(SERVER_KEY, dirname(__FILE__) . "/test3.xml");
 		$method = new RESTMethod();
 		$method->setName("touchComplex4");
 		$method->setObject("ClassOne");
-		$this->assertEquals('{"errors":[],"result":{"field1":"value1","field2":null}}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[],"result":{"field1":"value1","field2":null}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 
-		RESTConfigurationLoader::reloadConfiguration(dirname(__FILE__) . "/test4.xml");
+		RESTConfigurationLoader::reloadConfiguration(SERVER_KEY, dirname(__FILE__) . "/test4.xml");
 		$method = new RESTMethod();
 		$method->setName("touchComplex5");
 		$method->setObject("ClassOne");
-		$this->assertEquals('{"errors":[],"result":{"field1":["value1",3,"value3"]}}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[],"result":{"field1":["value1",3,"value3"]}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 
-		RESTConfigurationLoader::reloadConfiguration(dirname(__FILE__) . "/test5.xml");
+		RESTConfigurationLoader::reloadConfiguration(SERVER_KEY, dirname(__FILE__) . "/test5.xml");
 		$method = new RESTMethod();
 		$method->setName("touchComplex6");
 		$method->setObject("ClassOne");
-		$this->assertEquals('{"errors":[],"result":{"field1":[{"childField1":"child value 1","childField2":"child value 2"},{"childField1":"second child value 1","childField2":"second child value 2"}]}}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[],"result":{"field1":[{"childField1":"child value 1","childField2":"child value 2"},{"childField1":"second child value 1","childField2":"second child value 2"}]}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 
-		RESTConfigurationLoader::reloadConfiguration(dirname(__FILE__) . "/test6.xml");
+		RESTConfigurationLoader::reloadConfiguration(SERVER_KEY, dirname(__FILE__) . "/test6.xml");
 		$method = new RESTMethod();
 		$method->setName("touchComplex7");
 		$method->setObject("ClassThree");
-		$this->assertEquals('{"errors":[],"result":{"field1":"this is field1","field2":["this","is","field",2,true],"field4":[{"field1":"child value 1","field2":"child value 2"},{"field1":"second child value 1","field2":"second child value 2"}]}}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[],"result":{"field1":"this is field1","field2":["this","is","field",2,true],"field4":[{"field1":"child value 1","field2":"child value 2"},{"field1":"second child value 1","field2":"second child value 2"}]}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 
-		RESTConfigurationLoader::reloadConfiguration(dirname(__FILE__) . "/test.xml");
+		RESTConfigurationLoader::reloadConfiguration(SERVER_KEY, dirname(__FILE__) . "/test.xml");
 		$method = new RESTMethod();
 		$method->setName("touchComplex8");
 		$method->setObject("ClassOne");
 		$method->setArray(true);
-		$this->assertEquals('{"errors":[],"result":[{"field1":"value1","field2":"value2"},{"field1":"second value1","field2":"second value2"},{"field1":"third value1","field2":"third value2"}]}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[],"result":[{"field1":"value1","field2":"value2"},{"field1":"second value1","field2":"second value2"},{"field1":"third value1","field2":"third value2"}]}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 	}
 
 	function testError() {
-		RESTConfigurationLoader::reloadConfiguration(dirname(__FILE__) . "/test7.xml");
+		RESTConfigurationLoader::reloadConfiguration(SERVER_KEY, dirname(__FILE__) . "/test7.xml");
 		$method = new RESTMethod();
 		$method->setName("touchError");
 		$method->setObject("ClassOne");
 		$method->setArray(true);
-		$this->assertEquals('{"errors":[{"code":1,"message":"custom message"}],"result":null}', doCall($method, null, new NewSampleAPI()));
+		$this->assertEquals('{"errors":[{"code":1,"message":"custom message"}],"result":null}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 	}
 }
 

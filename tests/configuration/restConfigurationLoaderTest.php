@@ -29,7 +29,8 @@ require_once(dirname(__FILE__) . "/../../mashape/configuration/restConfiguration
 class RESTConfigurationLoaderTest extends PHPUnit_Framework_TestCase
 {
 	function testLoadConfiguration() {
-		$configuration = RESTConfigurationLoader::loadConfiguration();
+		$serverKey = "the-server-key";
+		$configuration = RESTConfigurationLoader::loadConfiguration($serverKey);
 		$this->assertFalse($configuration == null);
 		$this->assertEquals(1, count($configuration->getMethods()));
 		$this->assertEquals(0, count($configuration->getObjects()));

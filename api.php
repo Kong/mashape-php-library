@@ -16,7 +16,7 @@ class ComponentAPI extends MashapeRestAPI
 	public function sayHello($name) {
 		return "Hello " . $name . "!";
 	}
-
+	
 }
 
 // Init the library

@@ -32,28 +32,32 @@ require_once(dirname(__FILE__) . "/helpers/loadMethods.php");
 require_once(dirname(__FILE__) . "/helpers/loadObjects.php");
 require_once(dirname(__FILE__) . "/restConfiguration.php");
 
-define("XML_SERVERKEY", "serverkey");
-
 class RESTConfigurationLoader {
 
-	public static function reloadConfiguration($path=CONFIGURATION_FILEPATH) {
-		$_SESSION[SESSION_VARNAME] = null;
-		return self::loadConfiguration($path);
+	private static function getSessionVarName($serverKey) {
+		return SESSION_VARNAME . $serverKey;
+	}
+	
+	public static function reloadConfiguration($serverKey, $path=CONFIGURATION_FILEPATH) {
+		$sessionVarName = self::getSessionVarName($serverKey);
+		$_SESSION[$sessionVarName] = null;
+		return self::loadConfiguration($serverKey, $path);
 	}
 
-	public static function loadConfiguration($path=CONFIGURATION_FILEPATH) {
+	public static function loadConfiguration($serverKey, $path=CONFIGURATION_FILEPATH) {
+		$sessionVarName = self::getSessionVarName($serverKey);
 		$configuration = null;
-		if (isset($_SESSION[SESSION_VARNAME]) && empty($_SESSION[SESSION_VARNAME]) == false) {
-			$configuration = unserialize($_SESSION[SESSION_VARNAME]);
+		if (isset($_SESSION[$sessionVarName]) && empty($_SESSION[$sessionVarName]) == false) {
+			$configuration = unserialize($_SESSION[$sessionVarName]);
 		} else {
 			$configuration = self::init($path);
-			$_SESSION[SESSION_VARNAME] = serialize($configuration);
+			$_SESSION[$sessionVarName] = serialize($configuration);
 		}
 		return $configuration;
 	}
 
-	public static function getMethod($methodName) {
-		$methods = self::loadConfiguration()->getMethods();
+	public static function getMethod($methodName, $serverKey) {
+		$methods = self::loadConfiguration($serverKey)->getMethods();
 		foreach ($methods as $method) {
 			if ($method->getName() == $methodName) {
 				return $method;
@@ -62,8 +66,8 @@ class RESTConfigurationLoader {
 		return null;
 	}
 
-	public static function getObject($className) {
-		$objects = self::loadConfiguration()->getObjects();
+	public static function getObject($className, $serverKey) {
+		$objects = self::loadConfiguration($serverKey)->getObjects();
 		foreach ($objects as $object) {
 			if ($object->getClassName() == $className) {
 				return $object;
