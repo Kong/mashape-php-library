@@ -35,6 +35,7 @@ function findRoute($requestUri, &$routeParameters, $serverKey) {
 
 	// Remove any folder before the route URL
 	$scriptUrl = $_SERVER["PHP_SELF"];
+	
 	$fileParts = Explode('/', $scriptUrl);
 	unset($fileParts[count($fileParts) - 1]);
 	$requestUri = substr($requestUri, strlen(implode("/", $fileParts)));

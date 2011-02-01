@@ -36,8 +36,9 @@ function serializeObject($result, $instance, $isSimpleResult, $serverKey) {
 	} else {
 		// It's a custom object, let's serialize recursively every field
 		$className = get_class($result);
-
+		
 		$reflectedClass = new ReflectionClass($className);
+		
 		$xmlObject = RESTConfigurationLoader::getObject($className, $serverKey);
 
 		if (empty($xmlObject)) {
@@ -57,7 +58,12 @@ function serializeObject($result, $instance, $isSimpleResult, $serverKey) {
 			$fieldMethod = $field->getMethod();
 			$fieldValue = null;
 			if (empty($fieldMethod)) {
-				$fieldValue = $reflectedClass->getProperty($fieldName)->getValue($result);
+				$reflectedProperty = $reflectedClass->getProperty($fieldName);
+				if ($reflectedProperty->isPublic()) {
+					$fieldValue = $reflectedClass->getProperty($fieldName)->getValue($result);
+				} else {
+					$fieldValue = $reflectedClass->getMethod("__get")->invokeArgs($result, array($fieldName));
+				}
 			} else {
 				$fieldValue = $reflectedClass->getMethod($fieldMethod)->invoke($result);
 			}

@@ -81,6 +81,7 @@ class Call implements IMethodHandler {
 		if (empty($methodName)) {
 			// Find route
 			$requestUri = (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
+			
 			$method = findRoute($requestUri, $parameters, $serverKey);
 			if (!empty($method)) {
 				$methodName = $method->getName();
