@@ -27,7 +27,9 @@
 require_once(dirname(__FILE__) . "/../../../exceptions/mashapeException.php");
 require_once(dirname(__FILE__) . "/../../../configuration/restConfigurationLoader.php");
 require_once(dirname(__FILE__) . "/../../../json/jsonUtils.php");
+require_once(dirname(__FILE__) . "/../../../utils/arrayUtils.php");
 require_once(dirname(__FILE__) . "/serializeObject.php");
+require_once(dirname(__FILE__) . "/serializeArray.php");
 
 function serializeMethodResult($method, $result, $instance, $serverKey) {
 	$json = "";
@@ -47,10 +49,7 @@ function serializeMethodResult($method, $result, $instance, $serverKey) {
 		if ($method->isArray()) {
 			$json .= "[";
 			if (is_array($result)) {
-				for ($i=0;$i<count($result);$i++) {
-					$json .=  serializeObject($result[$i], $instance, $isSimpleResult, $serverKey) . ",";
-				}
-				$json = JsonUtils::removeLastChar($result, $json);
+				$json .= serializeArray($result, $instance, $isSimpleResult, $serverKey);
 			} else {
 				// The result it's not an array although it was described IT WAS an array
 				throw new MashapeException(EXCEPTION_EXPECTED_ARRAY_RESULT, EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);

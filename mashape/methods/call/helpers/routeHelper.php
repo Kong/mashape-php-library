@@ -25,7 +25,9 @@
  */
 
 require_once(dirname(__FILE__) . "/../../../configuration/restConfigurationLoader.php");
+require_once(dirname(__FILE__) . "/../../../exceptions/mashapeException.php");
 require_once(dirname(__FILE__) . "/../../../utils/routeUtils.php");
+require_once(dirname(__FILE__) . "/../../../utils/arrayUtils.php");
 
 function findRoute($requestUri, &$routeParameters, $serverKey) {
 	$routeMethod = null;
@@ -33,41 +35,67 @@ function findRoute($requestUri, &$routeParameters, $serverKey) {
 	$configuration = RESTConfigurationLoader::loadConfiguration($serverKey);
 	$methods = $configuration->getMethods();
 
-	// Remove any folder before the route URL
-	$scriptUrl = $_SERVER["PHP_SELF"];
-	
-	$fileParts = Explode('/', $scriptUrl);
-	unset($fileParts[count($fileParts) - 1]);
-	$requestUri = substr($requestUri, strlen(implode("/", $fileParts)));
-	
 	$requestUri = Explode("?", substr($requestUri, 1));
 	$requestUriParts = Explode("/", $requestUri[0]);
 
-	foreach ($methods as $method) {
-		$route = $method->getRoute();
-		if (!empty($route)) {
-			$routeParts = Explode("/", substr($route, 1));
-			if (count($requestUriParts) == count($routeParts)) {
-				for ($i=0;$i<count($routeParts);$i++) {
-					if ($routeParts[$i] != $requestUriParts[$i]) {
-						if (RouteUtils::isRoutePlaceholder($routeParts[$i])) {
-							$placeHolder = RouteUtils::getRoutePlaceholder($routeParts[$i]);
-							$routeParameters[$placeHolder] = $requestUriParts[$i];
-						} else {
-							break;
+	$likelyMethods = array();
+	$excludedMethods = array();
+	// Backward loop
+	for ($i=count($requestUriParts) - 1; $i>=0;$i--) {
+		// Find if there's a path like that, otherwise check for placeholders
+		foreach ($methods as $method) {
+			$methodName = $method->getName();
+			if (in_array($methodName, $excludedMethods)) {
+				continue;
+			}
+//			echo "Method " . $methodName . "\n\n";
+			$route = $method->getRoute();
+			if (!empty($route)) {
+				$routeParts = Explode("/", substr($route, 1));
+				$backwardIndex = count($routeParts) - (count($requestUriParts) - $i);
+				if ($backwardIndex >= 0) {
+//					echo "* RoutePart: " . $routeParts[$backwardIndex] . "\n";
+//					echo "* RequestPart: " .  $requestUriParts[$i] . "\n\n";
+					if ($routeParts[$backwardIndex] == $requestUriParts[$i]) {
+						if (!ArrayUtils::existKey($methodName, $likelyMethods)) {
+							$likelyMethods[$methodName] = array();
 						}
-					}
-					if ($i == count($routeParts) - 1) {
-						$routeMethod = $method;
+					} else if (RouteUtils::isRoutePlaceholder($routeParts[$backwardIndex])) {
+						$foundParameters;
+						$placeHolder = RouteUtils::getRoutePlaceholder($routeParts[$backwardIndex]);
+						if (!ArrayUtils::existKey($methodName, $likelyMethods)) {
+							$foundParameters = array();
+						} else {
+							$foundParameters = $likelyMethods[$methodName];
+						}
+						$foundParameters[$placeHolder] = $requestUriParts[$i];
+						$likelyMethods[$methodName] = $foundParameters;
+					} else {
+						array_push($excludedMethods, $methodName);
+						unset($likelyMethods[$methodName]);
 					}
 				}
 			}
 		}
-		if ($routeMethod != null) {
-			break;
-		}
 	}
+
+	if (count($likelyMethods) > 1) {
+		$ambiguousMethods = "";
+		foreach ($likelyMethods as $key => $value) {
+			$ambiguousMethods .= "\"" . $key . "\", ";
+		}
+		$ambiguousMethods = substr($ambiguousMethods, 0, strlen($ambiguousMethods) - 2);
+		throw new MashapeException(sprintf(EXCEPTION_AMBIGUOUS_ROUTE, $ambiguousMethods), EXCEPTION_SYSTEM_ERROR_CODE);
+	}
+
 	
+	// Get the first item (just one or none item can exist)
+	foreach ($likelyMethods as $key => $value) {
+		$routeMethod = RESTConfigurationLoader::getMethod($key, $serverKey);
+		$routeParameters = array_merge($routeParameters, $value);
+		break;
+	}
+
 	return $routeMethod;
 }
 

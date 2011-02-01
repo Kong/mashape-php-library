@@ -28,15 +28,19 @@ class ArrayUtils {
 
 	public static function existKey($key, $array) {
 		if (empty($array) == false) {
-			for ($i=0;$i<count($array);$i++) {
-				if ($array[$i] == $key) {
-					return true;
-				}
-			}
+			return array_key_exists($key, $array);
 		}
 		return false;
 	}
-	
+
+	public function isAssociative($array) {
+		if ( !is_array($array) || empty($array) ) {
+			return false;
+		}
+		return array_keys($array) !== range(0, count($array) - 1);
+		
+	}
+
 }
 
 ?>

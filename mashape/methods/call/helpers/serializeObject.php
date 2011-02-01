@@ -27,6 +27,7 @@
 require_once(dirname(__FILE__) . "/../../../exceptions/mashapeException.php");
 require_once(dirname(__FILE__) . "/../../../configuration/restConfigurationLoader.php");
 require_once(dirname(__FILE__) . "/../../../json/jsonUtils.php");
+require_once(dirname(__FILE__) . "/serializeArray.php");
 
 function serializeObject($result, $instance, $isSimpleResult, $serverKey) {
 	$json = "";
@@ -38,7 +39,7 @@ function serializeObject($result, $instance, $isSimpleResult, $serverKey) {
 		$className = get_class($result);
 		
 		$reflectedClass = new ReflectionClass($className);
-		
+
 		$xmlObject = RESTConfigurationLoader::getObject($className, $serverKey);
 
 		if (empty($xmlObject)) {
@@ -62,6 +63,7 @@ function serializeObject($result, $instance, $isSimpleResult, $serverKey) {
 				if ($reflectedProperty->isPublic()) {
 					$fieldValue = $reflectedClass->getProperty($fieldName)->getValue($result);
 				} else {
+					// Try using the __get magic method
 					$fieldValue = $reflectedClass->getMethod("__get")->invokeArgs($result, array($fieldName));
 				}
 			} else {
@@ -83,11 +85,7 @@ function serializeObject($result, $instance, $isSimpleResult, $serverKey) {
 				if ($field->isArray()) {
 					$json .= "[";
 					if (is_array($fieldValue)) {
-
-						for ($t=0;$t<count($fieldValue);$t++) {
-							$json .= serializeObject($fieldValue[$t], $instance, $isSimpleField, $serverKey) . ",";
-						}
-						$json = JsonUtils::removeLastChar($fieldValue, $json);
+						$json .= serializeArray($fieldValue, $instance, isSimpleField($field), $serverKey);
 					} else {
 						// The result it's not an array although it was described IT WAS an array
 						throw new MashapeException(sprintf(EXCEPTION_EXPECTED_ARRAY_RESULT, $fieldName, $className), EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);

@@ -54,7 +54,7 @@ function validateCallParameters($method, $parameters, $instance) {
 					throw new MashapeException(sprintf(EXCEPTION_REQUIRED_PARAMETER, $parameterName), EXCEPTION_REQUIRED_PARAMETERS_CODE);
 				}
 			} else {
-				if (ArrayUtils::existKey($parameterName, $keys) == false && $reflectedParameters[$i]->isOptional() == false) {
+				if (in_array($parameterName, $keys) == false && $reflectedParameters[$i]->isOptional() == false) {
 					throw new MashapeException(sprintf(EXCEPTION_REQUIRED_PARAMETER, $parameterName), EXCEPTION_REQUIRED_PARAMETERS_CODE);
 				}
 			}
