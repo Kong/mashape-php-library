@@ -24,6 +24,7 @@
  *
  */
 
+define("CONFIGURATION_FILEPATH", "./api.xml");
 require_once(dirname(__FILE__) . "/../../mashape/configuration/restConfigurationLoader.php");
 
 class RESTConfigurationLoaderTest extends PHPUnit_Framework_TestCase

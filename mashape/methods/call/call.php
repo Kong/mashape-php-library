@@ -24,7 +24,7 @@
  *
  */
 
-require_once(dirname(__FILE__) . "/../iMethodHandler.php");
+require_once(dirname(__FILE__) . "/../IMethodHandler.php");
 require_once(dirname(__FILE__) . "/../../net/httpUtils.php");
 require_once(dirname(__FILE__) . "/../../init/init.php");
 require_once(dirname(__FILE__) . "/../../configuration/restConfigurationLoader.php");
@@ -43,7 +43,7 @@ define("QUERY_PARAM_LANGUAGE", "language");
 define("QUERY_PARAM_VERSION", "version");
 define("MASHAPE_TOKEN_VALIDATION_URL", "http://api.mashape.com/validateToken");
 
-class Call implements iMethodHandler {
+class Call implements IMethodHandler {
 
 	public function handle($instance, $serverKey, $parameters, $httpRequestMethod) {
 		// If the request comes from local, reload the configuration

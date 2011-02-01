@@ -24,7 +24,7 @@
  *
  */
 
-require_once(dirname(__FILE__) . "/../iMethodHandler.php");
+require_once(dirname(__FILE__) . "/../IMethodHandler.php");
 require_once(dirname(__FILE__) . "/../../configuration/restConfigurationLoader.php");
 require_once(dirname(__FILE__) . "/../../net/httpUtils.php");
 require_once(dirname(__FILE__) . "/../../init/init.php");
@@ -37,7 +37,7 @@ define("HEADER_SERVER_KEY", "X-Mashape-Server-Key");
 define("MODE", "_mode");
 define("SIMPLE_MODE", "simple");
 
-class Discover implements iMethodHandler {
+class Discover implements IMethodHandler {
 
 	public function handle($instance, $serverKey, $parameters, $httpRequestMethod) {
 		// Validate HTTP Verb

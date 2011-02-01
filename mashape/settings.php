@@ -28,8 +28,4 @@
 // By default it's "mashape_api_configuration"
 define("SESSION_VARNAME", "mashape_api_configuration");
 	
-// The path of the XML configuration file required by Mashape.
-// The path is relative to your implementation file. By default it's "./api.xml"
-define("CONFIGURATION_FILEPATH", "./api.xml");
-
 ?>
