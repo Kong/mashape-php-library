@@ -35,24 +35,12 @@ function serializeArray($result, $instance, $isSimpleResult, $serverKey) {
 		if (ArrayUtils::isAssociative($result)) {
 			$json .= "{";
 			foreach ($result as $key => $value) {
-				echo "Associative key \"" . $key . "\"\n";
 				$json .= '"' . $key . '":';
 				if (is_object($value)) {
 					$json .= serializeObject($value, $instance, false, $serverKey);
 				} else {
 					if (is_array($value)) {
-//						if (ArrayUtils::isAssociative($result)) {
-//							
-//						} else {
-//							$json .= "[";
-//						}
 						$json .= serializeArray($value, $instance, $isSimpleResult, $serverKey);
-//						if (ArrayUtils::isAssociative($result)) {
-//							
-//						} else {
-//							$json .= "]";
-//						}
-//						$json .= serializeArray($value, $instance, $isSimpleResult, $serverKey);
 					} else {
 						$json .= serializeObject($value, $instance, !is_object($value), $serverKey);
 					}

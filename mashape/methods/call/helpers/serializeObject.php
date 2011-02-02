@@ -37,7 +37,7 @@ function serializeObject($result, $instance, $isSimpleResult, $serverKey) {
 	} else {
 		// It's a custom object, let's serialize recursively every field
 		$className = get_class($result);
-		
+
 		$reflectedClass = new ReflectionClass($className);
 
 		$xmlObject = RESTConfigurationLoader::getObject($className, $serverKey);
@@ -59,12 +59,19 @@ function serializeObject($result, $instance, $isSimpleResult, $serverKey) {
 			$fieldMethod = $field->getMethod();
 			$fieldValue = null;
 			if (empty($fieldMethod)) {
-				$reflectedProperty = $reflectedClass->getProperty($fieldName);
-				if ($reflectedProperty->isPublic()) {
-					$fieldValue = $reflectedClass->getProperty($fieldName)->getValue($result);
+				if ($reflectedClass->hasProperty($fieldName)) {
+					$reflectedProperty = $reflectedClass->getProperty($fieldName);
+					if ($reflectedProperty->isPublic()) {
+						$fieldValue = $reflectedProperty->getValue($result);
+					} else {
+						// Try using the __get magic method
+						$fieldValue = $reflectedClass->getMethod("__get")->invokeArgs($result, array($fieldName));
+					}
+				} else if (ArrayUtils::existKey($fieldName, get_object_vars($result))) {
+					$fieldValue = $result->$fieldName;
+						
 				} else {
-					// Try using the __get magic method
-					$fieldValue = $reflectedClass->getMethod("__get")->invokeArgs($result, array($fieldName));
+					throw new MashapeException(sprintf(EXCEPTION_FIELD_NOTFOUND, $fieldName), EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);
 				}
 			} else {
 				$fieldValue = $reflectedClass->getMethod($fieldMethod)->invoke($result);

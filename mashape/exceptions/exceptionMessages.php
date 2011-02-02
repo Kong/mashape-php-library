@@ -81,6 +81,7 @@ define("EXCEPTION_REQUIRED_PARAMETER", "Missing required parameter \"%s\"");
 
 // http://api.mashape.com Error codes
 
+define("EXCEPTION_FIELD_NOTFOUND", "Can't find the property \"%s\"");
 define("EXCEPTION_INSTANCE_NULL", "Please verify the class you're initializing with 'MashapeHandler::handleApi(..)' exists");
 define("EXCEPTION_EMPTY_REQUEST", "A request attempt was made to Mashape, but the response was empty. The firewall may be blocking outbound HTTP requests");
 define("EXCEPTION_JSONDECODE_REQUEST", "Can't deserialize the response JSON from Mashape. The json_decode function is missing on server");

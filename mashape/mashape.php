@@ -36,15 +36,18 @@ abstract class MashapeRestAPI {
 		$this->dirPath = $dirPath;
 	}
 
-	protected static function addError($code, $message) {
+	protected static function addError($code, $message, $statusCode = null) {
 		if (empty(self::$errors)) {
 			self::$errors = array();
 		}
 		$e = new MashapeAPIError($code, $message);
 		array_push(self::$errors, $e);
+		if (!empty($statusCode)) {
+			self::setHTTPStatusCode($statusCode);
+		}
 	}
 	
-	public static function setHttpStatusCode($statusCode) {
+	public static function setHTTPStatusCode($statusCode) {
 		if (!empty($statusCode)) {
 			header("HTTP/1.0 " . $statusCode);
 		}
