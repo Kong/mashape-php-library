@@ -48,14 +48,11 @@ function findRoute($requestUri, &$routeParameters, $serverKey) {
 			if (in_array($methodName, $excludedMethods)) {
 				continue;
 			}
-//			echo "Method " . $methodName . "\n\n";
 			$route = $method->getRoute();
 			if (!empty($route)) {
 				$routeParts = Explode("/", substr($route, 1));
 				$backwardIndex = count($routeParts) - (count($requestUriParts) - $i);
 				if ($backwardIndex >= 0) {
-//					echo "* RoutePart: " . $routeParts[$backwardIndex] . "\n";
-//					echo "* RequestPart: " .  $requestUriParts[$i] . "\n\n";
 					if ($routeParts[$backwardIndex] == $requestUriParts[$i]) {
 						if (!ArrayUtils::existKey($methodName, $likelyMethods)) {
 							$likelyMethods[$methodName] = array();
