@@ -43,6 +43,12 @@ abstract class MashapeRestAPI {
 		$e = new MashapeAPIError($code, $message);
 		array_push(self::$errors, $e);
 	}
+	
+	public static function setHttpStatusCode($statusCode) {
+		if (!empty($statusCode)) {
+			header("HTTP/1.0 " . $statusCode);
+		}
+	}
 
 	public static function parseBoolean($value) {
 		if ($value == "1" || strtolower($value) === "true") {
