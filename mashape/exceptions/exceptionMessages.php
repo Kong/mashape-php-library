@@ -25,7 +25,9 @@
  */
 
 define("EXCEPTION_GENERIC_LIBRARY_ERROR_CODE", 1000);
+define("EXCEPTION_EXPECTED_ARRAY_RESULT_SIMPLE", "The result value it's not an array although it's described it would have been an array, please check your XML file");
 define("EXCEPTION_EXPECTED_ARRAY_RESULT", "The result value of field \"%s\" in object \"%s\" it's not an array although it's described it would have been an array, please check your XML file");
+define("EXCEPTION_UNEXPECTED_ARRAY_RESULT_SIMPLE", "The result value it's an array although it was described it wouldn't have been an array, please check your XML file");
 define("EXCEPTION_UNEXPECTED_ARRAY_RESULT", "The result value of field \"%s\" in object \"%s\" it's an array although it was described it wouldn't have been an array, please check your XML file");
 define("EXCEPTION_UNKNOWN_OBJECT", "The result can't be serialized because it's of an unknown type \"%s\" not described in the XML file");
 

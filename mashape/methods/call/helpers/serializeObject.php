@@ -83,14 +83,12 @@ function serializeObject($result, $instance, $isSimpleResult, $serverKey) {
 				$isSimpleField = isSimpleField($field);
 
 				if ($field->isArray()) {
-					$json .= "[";
 					if (is_array($fieldValue)) {
 						$json .= serializeArray($fieldValue, $instance, isSimpleField($field), $serverKey);
 					} else {
 						// The result it's not an array although it was described IT WAS an array
 						throw new MashapeException(sprintf(EXCEPTION_EXPECTED_ARRAY_RESULT, $fieldName, $className), EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);
 					}
-					$json .= "]";
 				} else {
 					if (is_array($fieldValue)) {
 						// The result it's an array although it was described IT WAS NOT an array

@@ -30,6 +30,7 @@ require_once(dirname(__FILE__) . "/../../init/init.php");
 require_once(dirname(__FILE__) . "/../../configuration/restConfigurationLoader.php");
 require_once(dirname(__FILE__) . "/helpers/callHelper.php");
 require_once(dirname(__FILE__) . "/helpers/routeHelper.php");
+require_once(dirname(__FILE__) . "/../discover/helpers/updateHtaccess.php");
 
 define("METHOD", "_method");
 define("TOKEN", "_token");
@@ -47,7 +48,7 @@ class Call implements IMethodHandler {
 
 	public function handle($instance, $serverKey, $parameters, $httpRequestMethod) {
 		// If the request comes from local, reload the configuration
-		$this->reloadConfiguration($serverKey);
+		$this->reloadConfiguration($instance, $serverKey);
 
 		$methodName = null;
 		$method = null;
@@ -94,8 +95,12 @@ class Call implements IMethodHandler {
 		}
 	}
 
-	private function reloadConfiguration($serverKey) {
+	private function reloadConfiguration($instance, $serverKey) {
 		if (HttpUtils::isLocal()) {
+			// Update the .htaccess file with the new route settings
+			updateHtaccess($instance);
+			
+			// Update the configuration
 			RESTConfigurationLoader::reloadConfiguration($serverKey);
 		}
 	}

@@ -47,18 +47,16 @@ function serializeMethodResult($method, $result, $instance, $serverKey) {
 			$json .= '{"' . $method->getResult() . '":';
 		}
 		if ($method->isArray()) {
-			$json .= "[";
 			if (is_array($result)) {
 				$json .= serializeArray($result, $instance, $isSimpleResult, $serverKey);
 			} else {
 				// The result it's not an array although it was described IT WAS an array
-				throw new MashapeException(EXCEPTION_EXPECTED_ARRAY_RESULT, EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);
+				throw new MashapeException(EXCEPTION_EXPECTED_ARRAY_RESULT_SIMPLE, EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);
 			}
-			$json .= "]";
 		} else {
 			if (is_array($result)) {
 				// The result it's an array although it was described IT WAS NOT an array
-				throw new MashapeException(EXCEPTION_UNEXPECTED_ARRAY_RESULT, EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);
+				throw new MashapeException(EXCEPTION_UNEXPECTED_ARRAY_RESULT_SIMPLE, EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);
 			} else {
 				$json .= serializeObject($result, $instance, $isSimpleResult, $serverKey);
 			}

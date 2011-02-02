@@ -33,27 +33,45 @@ function serializeArray($result, $instance, $isSimpleResult, $serverKey) {
 	$json = "";
 	if (is_array($result)) {
 		if (ArrayUtils::isAssociative($result)) {
+			$json .= "{";
 			foreach ($result as $key => $value) {
-				$json .= '{"' . $key . '":';
+				echo "Associative key \"" . $key . "\"\n";
+				$json .= '"' . $key . '":';
 				if (is_object($value)) {
 					$json .= serializeObject($value, $instance, false, $serverKey);
 				} else {
 					if (is_array($value)) {
-						$json .= "[";
+//						if (ArrayUtils::isAssociative($result)) {
+//							
+//						} else {
+//							$json .= "[";
+//						}
 						$json .= serializeArray($value, $instance, $isSimpleResult, $serverKey);
-						$json .= "]";
+//						if (ArrayUtils::isAssociative($result)) {
+//							
+//						} else {
+//							$json .= "]";
+//						}
+//						$json .= serializeArray($value, $instance, $isSimpleResult, $serverKey);
 					} else {
 						$json .= serializeObject($value, $instance, !is_object($value), $serverKey);
 					}
 				}
-				$json .= "},";
+				$json .= ",";
 			}
 		} else {
+			$json .= "[";
 			for ($i=0;$i<count($result);$i++) {
 				$json .= serializeObject($result[$i], $instance, $isSimpleResult, $serverKey) . ",";
 			}
 		}
 		$json = JsonUtils::removeLastChar($result, $json);
+		if (ArrayUtils::isAssociative($result)) {
+			$json .= "}";
+		} else {
+			$json .= "]";
+		}
+		
 	}
 	return $json;
 }

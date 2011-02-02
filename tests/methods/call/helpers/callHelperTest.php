@@ -108,6 +108,24 @@ class CallTest extends PHPUnit_Framework_TestCase
 		$method->setObject("ClassOne");
 		$method->setArray(true);
 		$this->assertEquals('{"errors":[],"result":[{"field1":"value1","field2":"value2"},{"field1":"second value1","field2":"second value2"},{"field1":"third value1","field2":"third value2"}]}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
+
+		$method = new RESTMethod();
+		$method->setName("touchComplex9");
+		$method->setArray(true);
+		$method->setResult("val");
+		$this->assertEquals('{"errors":[],"result":{"val":["ciao","marco",false]}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
+
+		$method = new RESTMethod();
+		$method->setName("touchComplex10");
+		$method->setArray(true);
+		$method->setResult("val");
+		$this->assertEquals('{"errors":[],"result":{"val":{"key1":"value1","key2":"value2","key3":{"nested1":"nv1","nested2":"nv2"}}}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
+
+		$method = new RESTMethod();
+		$method->setName("touchComplex11");
+		$method->setArray(true);
+		$method->setResult("val");
+		$this->assertEquals('{"errors":[],"result":{"val":{"key1":"value1","key2":"value2","key3":{"nested1":"nv1","nested2":{"yo1":"vyo1","yo2":[1,2,3]}}}}}', doCall($method, null, new NewSampleAPI(), SERVER_KEY));
 	}
 
 	function testError() {
@@ -268,6 +286,18 @@ class NewSampleAPI extends MashapeRestAPI {
 		array_push($result, $obj);
 
 		return $result;
+	}
+
+	public function touchComplex9() {
+		return array("ciao", "marco", false);
+	}
+
+	public function touchComplex10() {
+		return array("key1"=>"value1", "key2"=>"value2", "key3"=>array("nested1"=>"nv1", "nested2"=>"nv2"));
+	}
+
+	public function touchComplex11() {
+		return array("key1"=>"value1", "key2"=>"value2", "key3"=>array("nested1"=>"nv1", "nested2"=>array("yo1"=>"vyo1", "yo2"=>array(1,2,3))));
 	}
 
 	public function touchError() {
