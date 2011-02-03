@@ -68,7 +68,7 @@ function loadMethodsFromXML($xmlParser) {
 			if (!validateRoute($route)) {
 				throw new MashapeException(sprintf(EXCEPTION_METHOD_INVALID_ROUTE, $route),EXCEPTION_XML_CODE);
 			} else {
-				if (existRoute($methods, $route)) {
+				if (existRoute($methods, $route, $http)) {
 					throw new MashapeException(sprintf(EXCEPTION_METHOD_DUPLICATE_ROUTE, $route), EXCEPTION_XML_CODE);
 				}
 			}
@@ -140,9 +140,9 @@ function validateRoute($route) {
 	}
 }
 
-function existRoute($methods, $route) {
+function existRoute($methods, $route, $http) {
 	foreach ($methods as $method) {
-		if ($method->getRoute() == $route) {
+		if ($method->getRoute() == $route && $method->getHttp() == $http) {
 			return true;
 		}
 	}

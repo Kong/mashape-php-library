@@ -29,11 +29,17 @@ require_once(dirname(__FILE__) . "/../../../exceptions/mashapeException.php");
 require_once(dirname(__FILE__) . "/../../../utils/routeUtils.php");
 require_once(dirname(__FILE__) . "/../../../utils/arrayUtils.php");
 
-function findRoute($requestUri, &$routeParameters, $serverKey) {
+function findRoute($requestUri, &$routeParameters, $httpRequestMethod, $serverKey) {
 	$routeMethod = null;
 
 	$configuration = RESTConfigurationLoader::loadConfiguration($serverKey);
 	$methods = $configuration->getMethods();
+	
+	for ($i=0;$i<count($methods);$i++) {
+		if ($methods[$i]->getHttp() != $httpRequestMethod) {
+			unset($methods[$i]);
+		}
+	}
 
 	$requestUri = Explode("?", substr($requestUri, 1));
 	$requestUriParts = Explode("/", $requestUri[0]);
@@ -85,7 +91,7 @@ function findRoute($requestUri, &$routeParameters, $serverKey) {
 		throw new MashapeException(sprintf(EXCEPTION_AMBIGUOUS_ROUTE, $ambiguousMethods), EXCEPTION_SYSTEM_ERROR_CODE);
 	}
 
-	
+
 	// Get the first item (just one or none item can exist)
 	foreach ($likelyMethods as $key => $value) {
 		$routeMethod = RESTConfigurationLoader::getMethod($key, $serverKey);

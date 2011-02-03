@@ -53,7 +53,7 @@ class Call implements IMethodHandler {
 		$methodName = null;
 		$method = null;
 		
-		$this->findMethod($parameters, $methodName, $method, $serverKey);
+		$this->findMethod($parameters, $methodName, $method, $serverKey, $httpRequestMethod);
 		
 		if (strtolower($method->getHttp()) != strtolower($httpRequestMethod)) {
 			throw new MashapeException(EXCEPTION_INVALID_HTTPMETHOD, EXCEPTION_INVALID_HTTPMETHOD_CODE);
@@ -76,14 +76,14 @@ class Call implements IMethodHandler {
 		}
 	}
 
-	private function findMethod(&$parameters, &$methodName, &$method, $serverKey) {
+	private function findMethod(&$parameters, &$methodName, &$method, $serverKey, $httpRequestMethod) {
 		$methodName = (isset($parameters[METHOD])) ? $parameters[METHOD] : null;
 		$method = null;
 		if (empty($methodName)) {
 			// Find route
 			$requestUri = (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
 			
-			$method = findRoute($requestUri, $parameters, $serverKey);
+			$method = findRoute($requestUri, $parameters, $httpRequestMethod, $serverKey);
 			if (!empty($method)) {
 				$methodName = $method->getName();
 			}
