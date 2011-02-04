@@ -77,13 +77,13 @@ function serializeObject($result, $instance, $isSimpleResult, $serverKey) {
 				$fieldValue = $reflectedClass->getMethod($fieldMethod)->invoke($result);
 			}
 
-			if ($fieldValue == null && $field->isOptional()) {
+			if ($fieldValue === null && $field->isOptional()) {
 				// Don't serialize the field
 				continue;
 			}
 
 			$json .= '"' . $fieldName . '":';
-			if ($fieldValue == null) {
+			if ($fieldValue === null) {
 				$json .= JsonUtils::encodeToJson($fieldValue);
 			} else {
 
@@ -107,7 +107,9 @@ function serializeObject($result, $instance, $isSimpleResult, $serverKey) {
 			}
 			$json .= ",";
 		}
-		$json = JsonUtils::removeLastChar($fields, $json);
+		if (substr($json, strlen($json) - 1, 1) != "{") {
+			$json = JsonUtils::removeLastChar($fields, $json);
+		}
 		// Close element
 		$json .= "}";
 	}
