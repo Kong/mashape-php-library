@@ -4,5 +4,5 @@
 	<method http="GET" name="sayHello" >
 		<result type="simple" name="helloWorldMessage" />
 	</method>
-	
+
 </api>

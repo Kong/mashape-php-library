@@ -34,7 +34,7 @@ function findRoute($requestUri, &$routeParameters, $httpRequestMethod, $serverKe
 
 	$configuration = RESTConfigurationLoader::loadConfiguration($serverKey);
 	$methods = $configuration->getMethods();
-	
+
 	for ($i=0;$i<count($methods);$i++) {
 		if ($methods[$i]->getHttp() != $httpRequestMethod) {
 			unset($methods[$i]);
@@ -57,27 +57,48 @@ function findRoute($requestUri, &$routeParameters, $httpRequestMethod, $serverKe
 			$route = $method->getRoute();
 			if (!empty($route)) {
 				$routeParts = Explode("/", substr($route, 1));
-				$backwardIndex = count($routeParts) - (count($requestUriParts) - $i);
-				if ($backwardIndex >= 0) {
-					if ($routeParts[$backwardIndex] == $requestUriParts[$i]) {
-						if (!ArrayUtils::existKey($methodName, $likelyMethods)) {
-							$likelyMethods[$methodName] = array();
-						}
-					} else if (RouteUtils::isRoutePlaceholder($routeParts[$backwardIndex])) {
-						$foundParameters;
-						$placeHolder = RouteUtils::getRoutePlaceholder($routeParts[$backwardIndex]);
-						if (!ArrayUtils::existKey($methodName, $likelyMethods)) {
-							$foundParameters = array();
+				if (count($routeParts) <= count($requestUriParts)) {
+					$backwardIndex = count($routeParts) - (count($requestUriParts) - $i);
+					if ($backwardIndex >= 0) {
+						if ($routeParts[$backwardIndex] == $requestUriParts[$i]) {
+							if (!ArrayUtils::existKey($methodName, $likelyMethods)) {
+								$likelyMethods[$methodName] = array();
+							}
+						} else if (RouteUtils::isRoutePlaceholder($routeParts[$backwardIndex])) {
+							$foundParameters;
+							$placeHolder = RouteUtils::getRoutePlaceholder($routeParts[$backwardIndex]);
+							if (!ArrayUtils::existKey($methodName, $likelyMethods)) {
+								$foundParameters = array();
+							} else {
+								$foundParameters = $likelyMethods[$methodName];
+							}
+							$foundParameters[$placeHolder] = $requestUriParts[$i];
+							$likelyMethods[$methodName] = $foundParameters;
 						} else {
-							$foundParameters = $likelyMethods[$methodName];
+							array_push($excludedMethods, $methodName);
+							unset($likelyMethods[$methodName]);
 						}
-						$foundParameters[$placeHolder] = $requestUriParts[$i];
-						$likelyMethods[$methodName] = $foundParameters;
-					} else {
-						array_push($excludedMethods, $methodName);
-						unset($likelyMethods[$methodName]);
 					}
 				}
+			}
+		}
+	}
+
+	if (count($likelyMethods) > 1) {
+		// Get the route with the highest matches
+		$maxRouteSize = 0;
+		foreach ($likelyMethods as $key => $value) {
+			$route = RESTConfigurationLoader::getMethod($key, $serverKey)->getRoute();
+			$routeSize = count(Explode("/", substr($route, 1)));
+			if ($routeSize > $maxRouteSize) {
+				$maxRouteSize = $routeSize;
+			}
+		}
+		foreach ($likelyMethods as $key => $value) {
+			$route = RESTConfigurationLoader::getMethod($key, $serverKey)->getRoute();
+			$routeSize = count(Explode("/", substr($route, 1)));
+			if ($routeSize < $maxRouteSize) {
+				unset($likelyMethods[$key]);
 			}
 		}
 	}
@@ -90,7 +111,6 @@ function findRoute($requestUri, &$routeParameters, $httpRequestMethod, $serverKe
 		$ambiguousMethods = substr($ambiguousMethods, 0, strlen($ambiguousMethods) - 2);
 		throw new MashapeException(sprintf(EXCEPTION_AMBIGUOUS_ROUTE, $ambiguousMethods), EXCEPTION_SYSTEM_ERROR_CODE);
 	}
-
 
 	// Get the first item (just one or none item can exist)
 	foreach ($likelyMethods as $key => $value) {
