@@ -133,7 +133,7 @@ function loadMethodsFromXML($xmlParser) {
 }
 
 function validateRoute($route) {
-	if (preg_match("/^(\/\{\w+\})*\/\w+(\/\w+)*(\/\{\w+\})*(\/\w+)*(\/\{\w+\})*$/", $route)) {
+	if (preg_match("/^(\/((\w+)|(\{\w+\})))+$/", $route)) {
 		return true;
 	} else {
 		return false;
