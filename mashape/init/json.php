@@ -37,4 +37,17 @@ if (!function_exists('json_decode')) {
 	}
 }
 
+if (!function_exists('json_encode')) {
+	function json_encode($content, $assoc=false) {
+		require_once(dirname(__FILE__) . "/../json/jsonImpl.php");
+		if ($assoc) {
+			$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
+		}
+		else {
+			$json = new Services_JSON;
+		}
+		return $json->encode($content);
+	}
+}
+
 ?>

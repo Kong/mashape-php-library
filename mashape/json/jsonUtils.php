@@ -32,8 +32,7 @@ class JsonUtils {
 
 	public static function encodeToJson($text) {
 		if (is_string($text)) {
-			$result = str_replace("\\", "\\\\", $text);
-			return '"' . str_replace("\"", "\\\"", $result) . '"';
+			return json_encode($text);
 		} else if (is_bool($text)) {
 			if ($text) {
 				return "true";
