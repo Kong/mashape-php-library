@@ -26,6 +26,7 @@
 
 require_once(dirname(__FILE__) . "/headers.php");
 require_once(dirname(__FILE__) . "/session.php");
+require_once(dirname(__FILE__) . "/../settings.php");
 require_once(dirname(__FILE__) . "/json.php");
 require_once(dirname(__FILE__) . "/../exceptions/mashapeException.php");
 

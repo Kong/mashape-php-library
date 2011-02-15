@@ -27,5 +27,6 @@
 // The variable name where Mashape will cache the configuration file.
 // By default it's "mashape_api_configuration"
 define("SESSION_VARNAME", "mashape_api_configuration");
+define("UID", "mashape_uid");
 	
 ?>

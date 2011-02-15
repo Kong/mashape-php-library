@@ -2,7 +2,7 @@
 
 require_once("mashape/mashape.php");
 
-// The path of the XML configuration file required by Mashape. By default it's "./api.xml"
+// The path of the XML configuration file required by Mashape:
 define("CONFIGURATION_FILEPATH", "./api.xml");
 
 // This is the server key for your component

@@ -128,6 +128,7 @@ class Call implements IMethodHandler {
 				throw new MashapeException($error->message, $error->code);
 			}
 			$authorization = $validationResponse->authorized;
+			$GLOBALS[UID] = $validationResponse->uid;
 			if ($authorization == true) {
 				return true;
 			} else {
