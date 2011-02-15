@@ -50,7 +50,7 @@ class MashapeHandler {
 	}
 
 	private static function validateCallback($callback) {
-		if (preg_match("/^\w+$/", $callback)) {
+		if (preg_match("/^(\w\.?_?)+$/", $callback)) {
 			return true;
 		} else {
 			return false;
