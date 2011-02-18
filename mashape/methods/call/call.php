@@ -42,7 +42,7 @@ define("QUERY_PARAM_METHOD", "method");
 define("QUERY_PARAM_SERVERKEY", "serverkey");
 define("QUERY_PARAM_LANGUAGE", "language");
 define("QUERY_PARAM_VERSION", "version");
-define("MASHAPE_TOKEN_VALIDATION_URL", "http://api.mashape.com/validateToken");
+define("MASHAPE_TOKEN_VALIDATION_URL", "https://api.mashape.com/validateToken");
 
 class Call implements IMethodHandler {
 
