@@ -32,4 +32,3 @@ require_once(dirname(__FILE__) . "/../exceptions/mashapeException.php");
 
 define("LIBRARY_LANGUAGE", "PHP");
 define("LIBRARY_VERSION", "V06");
-?>

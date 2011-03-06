@@ -27,5 +27,3 @@
 interface IMethodHandler {
 	public function handle($instance, $serverKey, $parameters, $httpRequestMethod);
 }
-
-?>

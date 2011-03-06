@@ -41,5 +41,3 @@ class RESTConfiguration {
 		$this->objects = $x;
 	}
 }
-
-?>

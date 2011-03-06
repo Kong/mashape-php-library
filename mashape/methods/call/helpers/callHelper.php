@@ -61,5 +61,3 @@ function doCall($method, $parameters, $instance, $serverKey) {
 	$resultJson .= '}';
 	return $resultJson;
 }
-
-?>

@@ -84,5 +84,3 @@ function discoverObjects($configuration, $objectsFound) {
 	
 	return $result;
 }
-
-?>

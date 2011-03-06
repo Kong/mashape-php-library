@@ -305,5 +305,3 @@ class NewSampleAPI extends MashapeRestAPI {
 		return null;
 	}
 }
-
-?>

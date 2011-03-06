@@ -41,5 +41,3 @@ class RESTObject {
 		$this->fields = $x;
 	}
 }
-
-?>

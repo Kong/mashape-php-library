@@ -76,5 +76,3 @@ abstract class MashapeRestAPI {
 		return self::$errors;
 	}
 }
-
-?>

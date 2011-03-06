@@ -39,7 +39,4 @@ class XmlParserUtils {
 		}
 		return $result;
 	}
-
 }
-
-?>

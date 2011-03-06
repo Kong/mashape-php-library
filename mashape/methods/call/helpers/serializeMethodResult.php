@@ -76,5 +76,3 @@ function isSimpleResult($method) {
 	}
 	return true;
 }
-
-?>

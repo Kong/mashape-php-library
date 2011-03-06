@@ -26,5 +26,3 @@
 
 // Start the session. If already started do nothing.
 if (!session_id()) session_start();
-
-?>

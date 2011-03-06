@@ -55,5 +55,3 @@ class SampleAPI extends MashapeRestAPI {
 		return "Hi, " . $name;
 	}
 }
-
-?>

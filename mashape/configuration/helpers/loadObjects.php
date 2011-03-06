@@ -118,5 +118,3 @@ function existFieldName($fields, $fieldName) {
 	}
 	return false;
 }
-
-?>

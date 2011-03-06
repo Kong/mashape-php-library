@@ -120,5 +120,3 @@ function isSimpleField($field) {
 	$object = $field->getObject();
 	return empty($object);
 }
-
-?>

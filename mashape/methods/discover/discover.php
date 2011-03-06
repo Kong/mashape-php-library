@@ -94,7 +94,4 @@ class Discover implements IMethodHandler {
 			return false;
 		}
 	}
-
 }
-
-?>
