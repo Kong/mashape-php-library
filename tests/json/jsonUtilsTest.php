@@ -24,7 +24,7 @@
  *
  */
 
-require_once(dirname(__FILE__) . "/../../mashape/json/jsonUtils.php");
+require_once(MASHAPE_LIBRAY_PATH . "/json/jsonUtils.php");
 
 class JsonUtilsTest extends PHPUnit_Framework_TestCase
 {

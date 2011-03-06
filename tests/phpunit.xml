@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+	bootstrap="./bootstrap.php"
+	colors="true"
+	backupGlobals="false"
+	backupStaticAttributes="false">
+
+	<testsuite name="Mashape Test Suite">
+		<directory>./configuration</directory>
+		<directory>./json</directory>
+		<directory>./methods</directory>
+		<directory>./net</directory>
+		<directory>./utils</directory>
+	</testsuite>
+
+</phpunit>

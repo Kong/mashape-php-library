@@ -24,8 +24,8 @@
  *
  */
 
-require_once(dirname(__FILE__) . "/../../../mashape/mashape.php");
-require_once(dirname(__FILE__) . "/../../../mashape/methods/discover/discover.php");
+require_once(MASHAPE_LIBRAY_PATH . "/mashape.php");
+require_once(MASHAPE_LIBRAY_PATH . "/methods/discover/discover.php");
 
 class DiscoverTest extends PHPUnit_Framework_TestCase
 {
