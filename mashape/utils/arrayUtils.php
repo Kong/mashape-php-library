@@ -33,7 +33,7 @@ class ArrayUtils {
 		return false;
 	}
 
-	public function isAssociative($array) {
+	public static function isAssociative($array) {
 		if ( !is_array($array) || empty($array) ) {
 			return false;
 		}

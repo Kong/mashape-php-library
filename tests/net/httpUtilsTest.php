@@ -24,10 +24,16 @@
  *
  */
 
-require_once(dirname(__FILE__) . "/../../mashape/net/httpUtils.php");
+require_once(MASHAPE_LIBRAY_PATH . "/net/httpUtils.php");
 
 class HttpUtilsTest extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @TODO: This is an integration test with www.mashape.com
+	 *        This test could fail if the site is unreachable (maintenance, dns, proxy, firewall etc.)
+	 *        The external resource should be mocked
+	 *        ~ dluc
+	 */
 	function testMakeHttpRequest() {
 		$response = HttpUtils::makeHttpRequest("http://www.mashape.com");
 		$this->assertFalse(empty($response));

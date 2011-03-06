@@ -24,9 +24,9 @@
  *
  */
 
-require_once(dirname(__FILE__) . "/../../../../mashape/configuration/restMethod.php");
-require_once(dirname(__FILE__) . "/../../../../mashape/mashape.php");
-require_once(dirname(__FILE__) . "/../../../../mashape/methods/call/helpers/callHelper.php");
+require_once(MASHAPE_LIBRAY_PATH . "/configuration/restMethod.php");
+require_once(MASHAPE_LIBRAY_PATH . "/mashape.php");
+require_once(MASHAPE_LIBRAY_PATH . "/methods/call/helpers/callHelper.php");
 
 define("SERVER_KEY", "serverkey");
 

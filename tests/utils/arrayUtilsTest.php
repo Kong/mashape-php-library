@@ -24,7 +24,7 @@
  *
  */
 
-require_once(dirname(__FILE__) . "/../../mashape/utils/arrayUtils.php");
+require_once(MASHAPE_LIBRAY_PATH . "/utils/arrayUtils.php");
 
 class ArrayUtilsTest extends PHPUnit_Framework_TestCase
 {
