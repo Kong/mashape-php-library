@@ -40,5 +40,3 @@ class MashapeAPIError {
 		return $this->message;
 	}
 }
-
-?>

@@ -69,5 +69,3 @@ class RESTMethod {
 		return $this->array;
 	}
 }
-
-?>

@@ -38,7 +38,4 @@ class RouteUtils {
 		}
 		return false;
 	}
-
 }
-
-?>

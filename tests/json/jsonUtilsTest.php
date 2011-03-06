@@ -35,5 +35,3 @@ class JsonUtilsTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('{"errors":[{"message":"this is a \"great\" error","code":2}], "result":null}', JsonUtils::serializeError('this is a "great" error', 2));
 	}
 }
-
-?>

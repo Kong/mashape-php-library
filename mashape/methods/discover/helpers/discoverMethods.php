@@ -108,5 +108,3 @@ function serializeParameters($method, $instance) {
 	$result .= ']';
 	return $result;
 }
-
-?>

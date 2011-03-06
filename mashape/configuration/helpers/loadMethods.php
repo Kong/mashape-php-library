@@ -157,5 +157,3 @@ function existMethod($methods, $name) {
 	}
 	return false;
 }
-
-?>

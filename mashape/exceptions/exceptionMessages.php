@@ -92,5 +92,3 @@ define("EXCEPTION_AMBIGUOUS_ROUTE", "Some routes are ambiguous and very similar,
 define("EXCEPTION_INVALID_APIKEY_CODE", 2001);
 define("EXCEPTION_EXCEEDED_LIMIT_CODE", 2002);
 define("EXCEPTION_SYSTEM_ERROR_CODE", 2000);
-
-?>

@@ -73,7 +73,4 @@ class HttpUtils {
 		}
 		return $ip;
 	}
-
 }
-
-?>

@@ -62,5 +62,3 @@ class RESTField {
 		$this->optional = $x;
 	}
 }
-
-?>

@@ -61,5 +61,3 @@ function parseRoute($route) {
 	preg_match_all($pattern, $route, $matches, PREG_OFFSET_CAPTURE);
 	return $matches;
 }
-
-?>

@@ -28,5 +28,3 @@
 // By default it's "mashape_api_configuration"
 define("SESSION_VARNAME", "mashape_api_configuration");
 define("UID", "mashape_uid");
-	
-?>

@@ -82,5 +82,3 @@ function validateCallParameters($method, $parameters, $instance) {
 
 	return $callParameters;
 }
-
-?>

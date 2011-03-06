@@ -36,5 +36,3 @@ class ArrayUtilsTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue(ArrayUtils::isAssociative(array("key1"=>"value1", "key2"=>"value2")));
 	}
 }
-
-?>

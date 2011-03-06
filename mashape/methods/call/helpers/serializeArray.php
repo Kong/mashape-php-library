@@ -68,7 +68,3 @@ function serializeArray($result, $instance, $isSimpleResult, $serverKey) {
 function checkIfSimpleResult($value) {
 	//if (is_string($value) || is_bool($value) || is_numeric($value) ||  )
 }
-
-
-
-?>

@@ -24,5 +24,3 @@ class ComponentAPI extends MashapeRestAPI
 
 // Init the library
 MashapeHandler::handleApi(new ComponentAPI(), SERVER_KEY);
-
-?>

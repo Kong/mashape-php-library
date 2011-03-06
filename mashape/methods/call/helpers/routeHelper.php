@@ -121,5 +121,3 @@ function findRoute($requestUri, &$routeParameters, $httpRequestMethod, $serverKe
 
 	return $routeMethod;
 }
-
-?>
