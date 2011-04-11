@@ -85,6 +85,7 @@ class MashapeHandler {
 				$result;
 				switch (strtolower($operation)) {
 					case "discover":
+						header("Content-type: application/xml");
 						$discover = new Discover();
 						$result = $discover->handle($instance, $serverKey, $params, $requestMethod);
 						break;
@@ -116,6 +117,7 @@ class MashapeHandler {
 		} catch (Exception $e) {
 			//If it's an ApizatorException then print the specific code
 			if ($e instanceof MashapeException) {
+				header("Content-type: application/json");
 				$code = $e->getCode();
 				switch ($code) {
 					case EXCEPTION_XML_CODE:
@@ -130,13 +132,13 @@ class MashapeHandler {
 					case EXCEPTION_NOTSUPPORTED_OPERATION_CODE:
 						header("HTTP/1.0 501 Not Implemented");
 						break;
-					case EXCEPTION_AUTH_INVALID_SERVERKEY_CODE:
-						self::setUnauthorizedResponse();
-						break;
 					case EXCEPTION_METHOD_NOTFOUND_CODE:
 						header("HTTP/1.0 200 OK");
 						break;
 					case EXCEPTION_AUTH_INVALID_CODE:
+						self::setUnauthorizedResponse();
+						break;
+					case EXCEPTION_AUTH_INVALID_SERVERKEY_CODE:
 						self::setUnauthorizedResponse();
 						break;
 					case EXCEPTION_REQUIRED_PARAMETERS_CODE:

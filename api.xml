@@ -2,7 +2,7 @@
 <api>
 
 	<method http="GET" name="sayHello" >
-		<result type="simple" name="helloWorldMessage" />
+		<result type="simple" name="helloWorldMessage"/>
 	</method>
 
 </api>

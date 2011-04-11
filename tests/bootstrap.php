@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Initialise testing environment
+ * Initialize testing environment
  *
  * @author Devis Lucato <devis@lucato.it>
  */

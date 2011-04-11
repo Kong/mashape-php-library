@@ -27,50 +27,59 @@
 require_once(dirname(__FILE__) . "/../../../json/jsonUtils.php");
 require_once(dirname(__FILE__) . "/../../../exceptions/mashapeException.php");
 
+function generateObjects($objectsToCreate) {
+	$result = "";
+	
+	$keys = array_keys($objectsToCreate);
+	
+	foreach ($keys as $key) {
+		$result .= "\t<object ";
+		$result .= "name=\"" . $key . "\">\n";
+		$result .= "\t\t<field>" . $objectsToCreate[$key] . "</field>\n";
+		$result .= "\t</object>\n";
+	}
+	
+	return $result;
+}
+
+
 function discoverObjects($configuration, $objectsFound) {
-	$result = '"objects":[';
+	$result = "";
 	$objects = $configuration->getObjects();
 	
 	$objectsDone = array();
 	
 	foreach ($objects as $object) {
-		$result .= "{";
+		$result .= "\t<object ";
 
 		$className = $object->getClassName();
-		$result .= '"class":"' . $className . '",';
-		$result .= '"fields":[';
+		$result .= "name=\"" . $className . "\" >\n";
 		foreach($object->getFields() as $field) {
-			$result .= "{";
+			$result .= "\t\t<field";
 
-			$fieldName = $field->getName();
-			$result .= '"name":"' . $fieldName . '",';
 			$objectName = $field->getObject();
 			if ($objectName != null) {
 				if (!in_array($objectName, $objectsFound) && !in_array($objectName, $objectsDone)) {
 					array_push($objectsFound, $objectName);
 				}
 			}
-			$result .= '"object":' . (empty($objectName) ? "null" : '"' . $objectName . '"') . ',';
-			$methodName = $field->getMethod();
-			$result .= '"method":' . (empty($methodName) ? "null" : '"' . $methodName . '"') . ',';
-			$result .= '"array":' . ($field->isArray() ? "true" : "false") . ",";
-			$result .= '"optional":' . ($field->isOptional() ? "true" : "false");
-
-			$result .= "},";
+			if (!empty($objectName)) {
+				$result .= " object=\"" . $objectName . "\"";
+			}
+			$result .= " array=\"" . ($field->isArray() ? "true" : "false") . "\"";
+			$result .= " optional=\"" . ($field->isOptional() ? "true" : "false") . "\"";
+			$fieldName = $field->getName();
+			$result .= ">" . $fieldName . "</field>\n";
 		}
-		// Remove the last comma
-		$result = JsonUtils::removeLastChar($object->getFields(), $result);
 
-		$result .= ']';
-		$result .= "},";
+		$result .= "\t</object>\n";
 		
 		array_push($objectsDone, $className);
 		
 		$objectsFound = array_diff($objectsFound, array($className));
 	}
-	// Remove the last comma
-	$result = JsonUtils::removeLastChar($objects, $result);
-	$result .= ']';
+	
+	$result .= "\t<object name=\"StandardMashapeError\">\n\t\t<field>code</field>\n\t\t<field>message</field>\n\t</object>\n";
 	
 	// Check that all objects exist
 	if (!empty($objectsFound)) {

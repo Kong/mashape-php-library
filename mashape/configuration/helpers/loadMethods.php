@@ -75,16 +75,17 @@ function loadMethodsFromXML($xmlParser) {
 		}
 
 		// Get the result
-		$resultsNode = $xmlMethod->result;
+		$resultsNode = XmlParserUtils::getChildren($xmlMethod, "result"); //$xmlMethod->result;
 		
 		$resultNode = null;
 		if (count($resultsNode) > 1) {
 			throw new MashapeException(sprintf(EXCEPTION_RESULT_MULTIPLE, $name), EXCEPTION_XML_CODE);
 		} elseif (count($resultsNode)==1) {
 			$resultNode = $resultsNode[0];
-		} else {
-			throw new MashapeException(sprintf(EXCEPTION_RESULT_MISSING, $name), EXCEPTION_XML_CODE);
 		}
+//		 else {
+//			throw new MashapeException(sprintf(EXCEPTION_RESULT_MISSING, $name), EXCEPTION_XML_CODE);
+//		}
 		
 		$object = null;
 		$array = null;

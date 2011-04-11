@@ -30,22 +30,21 @@ require_once(dirname(__FILE__) . "/serializeMethodResult.php");
 
 function doCall($method, $parameters, $instance, $serverKey) {
 	$callParameters = validateCallParameters($method, $parameters, $instance);
-	
+
 	$reflectedClass = new ReflectionClass(get_class($instance));
 	$reflectedMethod = $reflectedClass->getMethod($method->getName());
 	$result;
-	
+
 	$result = $reflectedMethod->invokeArgs($instance, $callParameters);
 
-	$resultJson = '{';
+	$resultJson = "";
 
 	//Print custom errors
 	$reflectedErrorMethod = $reflectedClass->getMethod("getErrors");
 	$reflectedErrors = $reflectedErrorMethod->invoke($instance);
 
-	$resultJson .= '"errors":[';
-
 	if (!empty($reflectedErrors)) {
+		$resultJson .= "[";
 		foreach ($reflectedErrors as $reflectedError) {
 			$reflectedErrorClass = new ReflectionClass(get_class($reflectedError));
 			$code = $reflectedErrorClass->getMethod("getCode")->invoke($reflectedError);
@@ -53,11 +52,9 @@ function doCall($method, $parameters, $instance, $serverKey) {
 			$resultJson .= '{"code":' . JsonUtils::encodeToJson($code) . ',"message":' . JsonUtils::encodeToJson($message) . '},';
 		}
 		$resultJson = JsonUtils::removeLastChar($reflectedErrors, $resultJson);
+		$resultJson .= "]";
+	} else {
+		$resultJson .= serializeMethodResult($method, $result, $instance, $serverKey);
 	}
-
-	$resultJson .= ']';
-	$resultJson .= ',"result":';
-	$resultJson .= serializeMethodResult($method, $result, $instance, $serverKey);
-	$resultJson .= '}';
 	return $resultJson;
 }

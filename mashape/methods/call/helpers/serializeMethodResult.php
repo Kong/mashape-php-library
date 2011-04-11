@@ -34,13 +34,17 @@ require_once(dirname(__FILE__) . "/serializeArray.php");
 function serializeMethodResult($method, $result, $instance, $serverKey) {
 	$json = "";
 
+	if (isNoResult($method)) {
+		return "{}";
+	}
+	
 	$isSimpleResult = isSimpleResult($method);
 
 	if ($result === null) {
 		if($isSimpleResult) {
 			$json .= '{"' . $method->getResult() . '":null}';
 		} else {
-			$json .= "null";
+			$json .= "{}";
 		}
 	} else {
 		if ($isSimpleResult) {
@@ -68,6 +72,14 @@ function serializeMethodResult($method, $result, $instance, $serverKey) {
 	return $json;
 }
 
+function isNoResult($method) {
+	$resultName = $method->getResult();
+	$objectName = $method->getObject();
+	if (empty($resultName) && empty($objectName)) {
+		return true;
+	}
+	return false;
+}
 function isSimpleResult($method) {
 	$resultName = $method->getResult();
 	$objectName = $method->getObject();

@@ -44,38 +44,57 @@ class Discover implements IMethodHandler {
 		if (strtolower($httpRequestMethod) != "get") {
 			throw new MashapeException(EXCEPTION_INVALID_HTTPMETHOD, EXCEPTION_INVALID_HTTPMETHOD_CODE);
 		}
+
 		// Validate request
 		if ($this->validateRequest($serverKey) == false) {
 			throw new MashapeException(EXCEPTION_AUTH_INVALID_SERVERKEY, EXCEPTION_AUTH_INVALID_SERVERKEY_CODE);
 		}
 
-		$resultJson = "{";
+		$resultXml = "<?xml version=\"1.0\" ?>\n";
+
+		$fileParts = Explode('/', $_SERVER["PHP_SELF"]);
+		$scriptName = $fileParts[count($fileParts) - 1];
+
+		$baseUrl = Explode("/" . $scriptName, $this->curPageURL());
+		$resultXml .= "<api baseUrl=\"" . $baseUrl[0]  . "\" " . $this->getSimpleInfo() . ">\n";
 
 		$mode = (isset($parameters[MODE])) ? $parameters[MODE] : null;
-		
+
 		$configuration = RESTConfigurationLoader::reloadConfiguration($serverKey);
 		if ($mode == null || $mode != SIMPLE_MODE) {
 			$objectsFound = array();
-			$methods = discoverMethods($instance, $configuration, $objectsFound);
+			$objectsToCreate = array();
+
+			$methods = discoverMethods($instance, $configuration, $objectsFound, $objectsToCreate, $scriptName);
 			$objects = discoverObjects($configuration, $objectsFound);
-			$resultJson .= $methods . "," . $objects . "," . $this->getSimpleInfo();
-			
+			$resultXml .= $methods . $objects . generateObjects($objectsToCreate);
+
 			// Update the .htaccess file with the new route settings
 			updateHtaccess($instance);
-			
-		} else {
-			$resultJson .= $this->getSimpleInfo();
-		}
-		$resultJson .= "}";
 
-		return $resultJson;
+		}
+		$resultXml .= "</api>";
+
+		return $resultXml;
 	}
-	
+
 	private function getSimpleInfo() {
-		$libraryVersion = '"version":"' . LIBRARY_VERSION . '"';
-		$libraryLanguage = '"language":"' . LIBRARY_LANGUAGE . '"';
-		
-		return $libraryLanguage . "," . $libraryVersion;
+		$libraryLanguage = "language=\"" . LIBRARY_LANGUAGE . "\"";
+		$libraryVersion = " version=\"" . LIBRARY_VERSION . "\"";
+
+		return $libraryLanguage . $libraryVersion;
+	}
+
+	private function curPageURL() {
+		$pageURL = 'http';
+		if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+		$pageURL .= "://";
+		if (isset($_SERVER["SERVER_PORT"]) && $_SERVER["SERVER_PORT"] != "80") {
+			$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+		} else {
+			$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+		}
+		return $pageURL;
 	}
 
 	private function validateRequest($serverKey) {

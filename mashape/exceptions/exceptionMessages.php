@@ -65,14 +65,14 @@ define("EXCEPTION_NOTSUPPORTED_HTTPMETHOD", "Http Method not supported. Only DEL
 define("EXCEPTION_NOTSUPPORTED_OPERATION_CODE", 1004);
 define("EXCEPTION_NOTSUPPORTED_OPERATION", "Operation not supported");
 
-define("EXCEPTION_AUTH_INVALID_SERVERKEY_CODE", 1005);
-define("EXCEPTION_AUTH_INVALID_SERVERKEY", "The request can't be authenticated because the server key sent for the request, and the one set in your implementation, don't match");
-
 define("EXCEPTION_METHOD_NOTFOUND_CODE", 1006);
 define("EXCEPTION_METHOD_NOTFOUND", "The method requested was not found: \"%s\"");
 
 define("EXCEPTION_AUTH_INVALID_CODE", 1007);
 define("EXCEPTION_AUTH_INVALID", "The request has not been authorized");
+
+define("EXCEPTION_AUTH_INVALID_SERVERKEY_CODE", 1005);
+define("EXCEPTION_AUTH_INVALID_SERVERKEY", "The request can't be authenticated because the server key sent for the request, and the one set in your implementation, don't match");
 
 define("EXCEPTION_REQUIRED_PARAMETERS_CODE", 1008);
 define("EXCEPTION_REQUIRED_PARAMETERS", "Some parameters required by the method are missing");

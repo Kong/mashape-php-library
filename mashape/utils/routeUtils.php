@@ -32,8 +32,10 @@ class RouteUtils {
 
 	public static function isRoutePlaceholder($val) {
 		if (!empty($val)) {
-			if (substr($val, 0, 1) == "{" && substr($val, strlen($val) - 1, 1) == "}") {
-				return true;
+			if (strlen($val) >= 2) {
+				if (substr($val, 0, 1) == "{" && substr($val, strlen($val) - 1, 1) == "}") {
+					return true;
+				}
 			}
 		}
 		return false;
