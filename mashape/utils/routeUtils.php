@@ -26,6 +26,35 @@
 
 class RouteUtils {
 
+	public static function findPlaceHolders($url) {
+		$placeholders = array();
+
+		for($i=0;$i < strlen($url);$i++) {
+			$curchar = substr($url, $i, 1);
+
+			if ($curchar == "{") {
+				// It may be a placeholder
+
+				$pos = strpos($url, "}", $i);
+				if ($pos !== false) {
+					// It's a placeholder
+
+					$placeHolder = substr($url, $i + 1, $pos - 1 - $i); // Get the placeholder name without {..}
+					if (in_array($placeHolder, $placeholders) === false) {
+						array_push($placeholders, $placeHolder);
+
+						$i = $pos;
+						continue;
+
+					}
+				}
+			}
+		}
+
+		return $placeholders;
+	}
+
+
 	public static function getRoutePlaceholder($val) {
 		return substr($val, 1, strlen($val) - 2);
 	}

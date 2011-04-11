@@ -38,35 +38,43 @@ function discoverMethods($instance, $configuration, &$objectsFound, &$objectsToC
 		$http = $method->getHttp();
 		$result .= " http=\"" . strtoupper($http) . "\">\n";
 		$route = $method->getRoute();
-		
+
 		$result .= "\t\t<url><![CDATA[";
 		if (empty($route)) {
 			$result .= "/" . $scriptName . "?_method=" . $name . serializeParametersQueryString($method, $instance);
 		} else {
+			$queryString = serializeParametersQueryString($method, $instance, RouteUtils::findPlaceHolders($route));
 			$result .= $route;
+			$pos = strpos($route, "?");
+			if ($pos !== false) {
+				$result .= $queryString;
+			} else {
+				$result .= "?" . $queryString;
+			}
+			$result = str_replace("?&", "?", $result);
 		}
 		$result .= "]]></url>\n";
 		$result .= serializeParameters($method, $instance);
-		
+
 		$object = $method->getObject();
 		$resultName = $method->getResult();
-		
+
 		if (!empty($object)) {
 			$result .= "\t\t<result object=\"" . $object . "\"";
 			array_push($objectsFound, $object);
 		}
-		
+
 		if (!empty($resultName)) {
 			$uniqueName = findUniqueObjectName($objectsToCreate, $resultName, 0);
 			$result .= "\t\t<result object=\"" . $uniqueName . "\"";
 			$objectsToCreate[$uniqueName] = $resultName;
 		}
-		
+
 		$array = $method->isArray();
 		$result .= " array=\"" . ($array ? "true" : "false") . "\" />\n";
 
 		$result .= "\t\t<error object=\"StandardMashapeError\" array=\"true\" />\n";
-		
+
 		$result .= "\t</method>\n";
 	}
 	return $result;
@@ -86,19 +94,24 @@ function findUniqueObjectName($objects, $name, $index) {
 	return $numeratedName;
 }
 
-function serializeParametersQueryString($method, $instance) {
+function serializeParametersQueryString($method, $instance, $routeParameters = null) {
 	$reflectedClass = new ReflectionClass(get_class($instance));
 	$reflectedMethod = $reflectedClass->getMethod($method->getName());
 	$reflectedParameters = $reflectedMethod->getParameters();
 	$result = "";
 	for ($i=0;$i<count($reflectedParameters);$i++) {
 		$param = $reflectedParameters[$i];
+		if (!empty($routeParameters)) {
+			if (in_array($param->name, $routeParameters)) {
+				continue;
+			}
+		}
 		if ($i == 0) {
 			$result .= "&";
 		}
 		$result .= $param->name . "={" . $param->name . "}&";
 	}
-	
+
 	$result = JsonUtils::removeLastChar($reflectedParameters, $result);
 	return $result;
 }
@@ -112,9 +125,9 @@ function serializeParameters($method, $instance) {
 		$param = $reflectedParameters[$i];
 		$result .= "\t\t\t<parameter optional=\"" . ($param->isDefaultValueAvailable() ? "true" : "false") . "\">" . $param->name . "</parameter>\n";
 	}
-	
+
 	$result .= "\t\t</parameters>\n";
-	
+
 	// Check route parameters
 	$route = $method->getRoute();
 	if (!empty($route)) {
