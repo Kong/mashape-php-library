@@ -49,7 +49,9 @@ function discoverMethods($instance, $configuration, &$objectsFound, &$objectsToC
 			if ($pos !== false) {
 				$result .= $queryString;
 			} else {
-				$result .= "?" . $queryString;
+				if (!empty($queryString)) {
+					$result .= "?" . $queryString;
+				}
 			}
 			$result = str_replace("?&", "?", $result);
 		}
