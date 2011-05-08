@@ -114,7 +114,7 @@ class Call implements IMethodHandler {
 			if (empty($serverKey)) {
 				throw new MashapeException(EXCEPTION_EMPTY_SERVERKEY, EXCEPTION_XML_CODE);
 			}
-			$url = MASHAPE_TOKEN_VALIDATION_URL . "?" . QUERY_PARAM_TOKEN . "=" . $token . "&" . QUERY_PARAM_SERVERKEY . "=" . $serverKey . "&" . QUERY_PARAM_METHOD . "=" . $method . "&" . QUERY_PARAM_LANGUAGE . "=" . $language . "&" . QUERY_PARAM_VERSION . "=" . $version;
+			$url = MASHAPE_TOKEN_VALIDATION_URL . "?" . QUERY_PARAM_TOKEN . "=" . urlencode($token) . "&" . QUERY_PARAM_SERVERKEY . "=" . urlencode($serverKey) . "&" . QUERY_PARAM_METHOD . "=" . urlencode($method) . "&" . QUERY_PARAM_LANGUAGE . "=" .urlencode($language) . "&" . QUERY_PARAM_VERSION . "=" . urlencode($version);
 			$response = HttpUtils::makeHttpRequest($url);
 			if (empty($response)) {
 				throw new MashapeException(EXCEPTION_EMPTY_REQUEST, EXCEPTION_SYSTEM_ERROR_CODE);
