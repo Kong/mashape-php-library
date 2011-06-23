@@ -123,8 +123,8 @@ class Call implements IMethodHandler {
 			if (empty($validationResponse)) {
 				throw new MashapeException(EXCEPTION_JSONDECODE_REQUEST, EXCEPTION_SYSTEM_ERROR_CODE);
 			}
-			if (!empty($validationResponse->errors)) {
-				$error = $validationResponse->errors[0];
+			if (!empty($validationResponse->error)) {
+				$error = $validationResponse->error;
 				throw new MashapeException($error->message, $error->code);
 			}
 			$authorization = $validationResponse->authorized;
