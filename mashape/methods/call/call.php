@@ -68,12 +68,7 @@ class Call implements IMethodHandler {
 		$version = (isset($parameters[VERSION])) ? $parameters[VERSION] : null;
 		unset($parameters[VERSION]); // remove the version parameter
 
-		//Validate Request
-		if (self::validateRequest($serverKey, $token, $methodName, $language, $version)) {
-			return doCall($method, $parameters, $instance, $serverKey);
-		} else {
-			throw new MashapeException(EXCEPTION_AUTH_INVALID, EXCEPTION_AUTH_INVALID_CODE);
-		}
+		return doCall($method, $parameters, $instance, $serverKey);
 	}
 
 	private function findMethod(&$parameters, &$methodName, &$method, $serverKey, $httpRequestMethod) {
