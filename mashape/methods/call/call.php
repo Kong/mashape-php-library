@@ -33,16 +33,6 @@ require_once(dirname(__FILE__) . "/helpers/routeHelper.php");
 require_once(dirname(__FILE__) . "/../discover/helpers/updateHtaccess.php");
 
 define("METHOD", "_method");
-define("TOKEN", "_token");
-define("ROUTE", "_route");
-define("LANGUAGE", "_language");
-define("VERSION", "_version");
-define("QUERY_PARAM_TOKEN", "token");
-define("QUERY_PARAM_METHOD", "method");
-define("QUERY_PARAM_SERVERKEY", "serverkey");
-define("QUERY_PARAM_LANGUAGE", "language");
-define("QUERY_PARAM_VERSION", "version");
-define("MASHAPE_TOKEN_VALIDATION_URL", "https://api.mashape.com/validateToken");
 
 class Call implements IMethodHandler {
 
@@ -60,13 +50,6 @@ class Call implements IMethodHandler {
 		}
 
 		unset($parameters[METHOD]); // Remove the method name from the params
-		$token = (isset($parameters[TOKEN])) ? $parameters[TOKEN] : null;
-		unset($parameters[TOKEN]); // remove the token parameter
-
-		$language = (isset($parameters[LANGUAGE])) ? $parameters[LANGUAGE] : null;
-		unset($parameters[LANGUAGE]); // remove the language parameter
-		$version = (isset($parameters[VERSION])) ? $parameters[VERSION] : null;
-		unset($parameters[VERSION]); // remove the version parameter
 
 		return doCall($method, $parameters, $instance, $serverKey);
 	}
@@ -100,35 +83,4 @@ class Call implements IMethodHandler {
 		}
 	}
 
-	private function validateRequest($serverKey, $token, $method, $language, $version) {
-		// If the request comes from the local computer, then don't require authorization,
-		// otherwise check the headers
-		if (HttpUtils::isLocal()) {
-			return true;
-		} else {
-			if (empty($serverKey)) {
-				throw new MashapeException(EXCEPTION_EMPTY_SERVERKEY, EXCEPTION_XML_CODE);
-			}
-			$url = MASHAPE_TOKEN_VALIDATION_URL . "?" . QUERY_PARAM_TOKEN . "=" . urlencode($token) . "&" . QUERY_PARAM_SERVERKEY . "=" . urlencode($serverKey) . "&" . QUERY_PARAM_METHOD . "=" . urlencode($method) . "&" . QUERY_PARAM_LANGUAGE . "=" .urlencode($language) . "&" . QUERY_PARAM_VERSION . "=" . urlencode($version);
-			$response = HttpUtils::makeHttpRequest($url);
-			if (empty($response)) {
-				throw new MashapeException(EXCEPTION_EMPTY_REQUEST, EXCEPTION_SYSTEM_ERROR_CODE);
-			}
-			$validationResponse = json_decode($response);
-			if (empty($validationResponse)) {
-				throw new MashapeException(EXCEPTION_JSONDECODE_REQUEST, EXCEPTION_SYSTEM_ERROR_CODE);
-			}
-			if (!empty($validationResponse->error)) {
-				$error = $validationResponse->error;
-				throw new MashapeException($error->message, $error->code);
-			}
-			$authorization = $validationResponse->authorized;
-			$GLOBALS[UID] = $validationResponse->uid;
-			if ($authorization == true) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-	}
 }
