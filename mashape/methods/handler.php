@@ -29,7 +29,6 @@ require_once(dirname(__FILE__) . "/../json/jsonUtils.php");
 require_once(dirname(__FILE__) . "/../net/httpUtils.php");
 require_once(dirname(__FILE__) . "/discover/discover.php");
 require_once(dirname(__FILE__) . "/call/call.php");
-require_once(dirname(__FILE__) . "/../xml/xmlGenerator.php");
 
 define("OPERATION", "_op");
 define("CALLBACK", "callback");
@@ -98,25 +97,17 @@ class MashapeHandler {
 						throw new MashapeException(EXCEPTION_NOTSUPPORTED_OPERATION, EXCEPTION_NOTSUPPORTED_OPERATION_CODE);
 				}
 
-        $toXMLOutput = $instance::getOutputToXml();
-        if(isset($toXMLOutput) && $operation === "call") {
-          $JSONd = json_decode($result);
-          header("Content-type: application/xml");
-          $xmlResult = new XMLGenerator($JSONd, $toXMLOutput);
-          echo $xmlResult->toXML();
-        } else {
-  				$jsonpCallback = (isset($params[CALLBACK])) ? $params[CALLBACK] : null;
-  				if (empty($jsonpCallback)) {
-  					// Print the output
-  					echo $result;
-  				} else {
-  					if (self::validateCallback($jsonpCallback)) {
-  						echo $jsonpCallback . '(' . $result . ')';
-  					} else {
-  						throw new MashapeException(EXCEPTION_INVALID_CALLBACK, EXCEPTION_SYSTEM_ERROR_CODE);
-  					}
-  				}
-			  }
+				$jsonpCallback = (isset($params[CALLBACK])) ? $params[CALLBACK] : null;
+				if (empty($jsonpCallback)) {
+					// Print the output
+					echo $result;
+				} else {
+					if (self::validateCallback($jsonpCallback)) {
+						echo $jsonpCallback . '(' . $result . ')';
+					} else {
+						throw new MashapeException(EXCEPTION_INVALID_CALLBACK, EXCEPTION_SYSTEM_ERROR_CODE);
+					}
+				}
 
 			} else {
 				// Operation not supported
@@ -124,7 +115,6 @@ class MashapeHandler {
 			}
 
 		} catch (Exception $e) {
-		  $toXMLOutput = $instance::getOutputToXml();
 			//If it's an ApizatorException then print the specific code
 			if ($e instanceof MashapeException) {
 				header("Content-type: application/json");
@@ -167,32 +157,11 @@ class MashapeHandler {
 						header("HTTP/1.0 500 Internal Server Error");
 						break;
 				}
-				if(isset($toXMLOutput) && $operation === "call") {
-          header("Content-type: application/xml");
-          $errorArr = array(
-            'message' => $e->getMessage(),
-            'code' =>  $code
-          );
-          $xmlResult = new XMLGenerator($errorArr, 'error');
-          echo $xmlResult->toXML();
-        } else {
-				  echo JsonUtils::serializeError($e->getMessage(), $code);
-			  }
+				echo JsonUtils::serializeError($e->getMessage(), $code);
 			} else {
 				//Otherwise print a "generic exception" code
 				header("HTTP/1.0 500 Internal Server Error");
-				
-				if(isset($toXMLOutput) && $operation === "call") {
-          header("Content-type: application/xml");
-          $errorArr = array(
-            'message' => $e->getMessage(),
-            'code' =>  EXCEPTION_GENERIC_LIBRARY_ERROR_CODE
-          );
-          $xmlResult = new XMLGenerator($errorArr, 'error');
-          echo $xmlResult->toXML();
-        } else {
-				  echo JsonUtils::serializeError($e->getMessage(), EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);
-			  }
+				echo JsonUtils::serializeError($e->getMessage(), EXCEPTION_GENERIC_LIBRARY_ERROR_CODE);
 			}
 		}
 	}
