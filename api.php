@@ -16,7 +16,8 @@ class ComponentAPI extends MashapeRestAPI
 	}
 
 	// TODO: Declare your API functions below
-	public function sayHello($name) {
+	public function sayHello($name, $output = false) {
+	  if($output) parent::setOutputToXml("timezone");
 		return "Hello " . $name . "!";
 	}
 
