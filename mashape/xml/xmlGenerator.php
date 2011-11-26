@@ -1,25 +1,25 @@
 <?php
  /**
- * Mashape JSON to XML Generator
+ * JSON to XML Generator / Convertor
  *
- * Copyright Richard Tibbett, 2011
+ * Author: Richard Tibbett, 2011
  */
 class XMLGenerator {
   
   var $json;
-  
   var $rootName;
   
   function XMLGenerator($json, $rootName = 'result') {
     $this->json = $json;
     $this->rootName = $rootName;
-    
     $this->dom = new DOMDocument('1.0', 'utf-8');
   }
   
   public function toXML() {
-    $body = $this->Parse($this->json);
-    return $body;
+    try {
+      return $this->Parse($this->json);
+    } catch(Exception $e) {}
+    return $this->dom->saveXML();
   }
   
   private function Parse($json, $node = false) {
@@ -28,16 +28,21 @@ class XMLGenerator {
      $node = $this->dom->createElement($this->rootName);
      $root = true;
     }
-
-    foreach ($json as $key => $val) {   
-       if (is_array($val) || is_object($val)) { // handle arrays/objects
-
+    foreach ($json as $key => $val) {
+       if(is_array($val)) {
         foreach ($val as $skey => $sval) {
-          if($currentKey !== $key) $nNode = $this->dom->createElement($key);
+          if(is_object($sval)) {
+            $node->appendChild($this->Parse($sval, $this->dom->createElement($key)));
+          } else {
+            $node->appendChild($this->dom->createElement($key, $sval));
+          }
+        } 
+       } elseif (is_object($val)) {
+        foreach ($val as $skey => $sval) {
+          if(!$currentKey || $key !== $currentKey) $nNode = $this->dom->createElement($key);
           $node->appendChild($this->Parse(array($skey => $sval), $nNode));
           $currentKey = $key;
         }
-
        } else {
         // fix boolean output
         if($val === true) {
@@ -48,7 +53,6 @@ class XMLGenerator {
         $node->appendChild($this->dom->createElement($key, $val));
        }
     }
-
     if ($root == true) {
      $this->dom->appendChild($node);
      return $this->dom->saveXML(); 
@@ -56,15 +60,16 @@ class XMLGenerator {
      return $node;
     }
   }
-  
 }
 
+
 /*
-// TEST
+// TEST 
+// - Enable this block and execute this file.
 
-$jsonStr = '{"version":"1.2","url":"http:\/\/worldtimeengine.com\/current\/10_10","location":{"region":"Nigeria","latitude":10,"longitude":10},"summary":{"utc":"2011-11-25 09:52:10","local":"2011-11-25 10:52:10","hasDst":true},"current":{"abbreviation":"WAT","description":"West Africa Time","utcOffset":"+1:00"}}';
-$json = json_decode($jsonStr);
+$jsonTestStr = '{"simpleval0":1.2,"simpleval1":"http:\/\/foo.com\/bar\/","objval":{"foo":"bar","baz":10},"arrayval":["50", "60", "70"],"arrayobjval":[{"foo":"bar","baz":30}, {"foo":"bar","baz":40}],"recursivetest":{"simpleval0":1.4,"simpleval1":"http:\/\/foo.com\/bar\/","objval":{"foo":"bar","baz":100},"arrayval":["500", "600", "700"],"arrayobjval":[{"foo":"bar","baz":300}, {"foo":"bar","baz":400}]}}';
+$json = json_decode($jsonTestStr);
 
-$xmlgen = new XMLGenerator($json, 'timezone');
+$xmlgen = new XMLGenerator($json, 'jsontoxml');
 echo $xmlgen->toXML();
 */
