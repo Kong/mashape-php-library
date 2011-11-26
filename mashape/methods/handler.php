@@ -32,7 +32,6 @@ require_once(dirname(__FILE__) . "/call/call.php");
 require_once(dirname(__FILE__) . "/../xml/xmlGenerator.php");
 
 define("OPERATION", "_op");
-define("OUTPUT", "output");
 define("CALLBACK", "callback");
 
 class MashapeHandler {
@@ -79,7 +78,8 @@ class MashapeHandler {
 				throw new MashapeException(EXCEPTION_NOTSUPPORTED_HTTPMETHOD, EXCEPTION_NOTSUPPORTED_HTTPMETHOD_CODE);
 			}
 			
-			if(isset($params[OUTPUT]) && $params[OUTPUT] === 'xml') {
+			var $outputFormat = HttpUtils::getHeader("X-Output-Format");
+			if(!empty($outputFormat) && $outputFormat == 'xml') {
 			  $instance::$toXml = true;
 			}
 
