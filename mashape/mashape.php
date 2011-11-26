@@ -30,6 +30,10 @@ require_once (dirname(__FILE__) . "/methods/handler.php");
 
 abstract class MashapeRestAPI {
 	private static $errors;
+	
+	public static $toXml = false;
+	public static $xmlRoot = 'result';
+	
 	public $dirPath;
 
 	protected function __construct($dirPath) {
@@ -51,6 +55,10 @@ abstract class MashapeRestAPI {
 		if (!empty($statusCode)) {
 			header("HTTP/1.0 " . $statusCode);
 		}
+	}
+	
+	public static function setRoot($name = 'result') {
+	  self::$xmlRoot = $name;
 	}
 
 	public static function parseBoolean($value) {
