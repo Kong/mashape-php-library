@@ -12,13 +12,15 @@ class XMLGenerator {
   function XMLGenerator($json, $rootName = 'result') {
     $this->json = $json;
     $this->rootName = $rootName;
-    $this->dom = new DOMDocument('1.0', 'utf-8');
   }
   
   public function toXML() {
     try {
+      $this->dom = new DOMDocument('1.0', 'utf-8');
       return $this->Parse($this->json);
     } catch(Exception $e) {}
+    $this->dom = new DOMDocument('1.0', 'utf-8');
+    $this->dom->appendChild( $this->dom->createElement($this->rootName) );
     return $this->dom->saveXML();
   }
   
@@ -39,7 +41,7 @@ class XMLGenerator {
         } 
        } elseif (is_object($val)) {
         foreach ($val as $skey => $sval) {
-          if(!$currentKey || $key !== $currentKey) $nNode = $this->dom->createElement($key);
+          if(!isset($currentKey) || $key !== $currentKey) $nNode = $this->dom->createElement($key);
           $node->appendChild($this->Parse(array($skey => $sval), $nNode));
           $currentKey = $key;
         }
