@@ -30,7 +30,7 @@ class XMLGenerator {
     }
 
     foreach ($json as $key => $val) {   
-       if (is_array($val) || is_object($val)) { // handle arrays/objects
+       if (is_array($val)) { // handle arrays
 
         foreach ($val as $skey => $sval) {
           if($currentKey !== $key) $nNode = $this->dom->createElement($key);
@@ -39,12 +39,6 @@ class XMLGenerator {
         }
 
        } else {
-        // fix boolean output
-        if($val === true) {
-          $val = "true";
-        } elseif($val === false) {
-          $val = "false";
-        }
         $node->appendChild($this->dom->createElement($key, $val));
        }
     }
@@ -62,9 +56,20 @@ class XMLGenerator {
 /*
 // TEST
 
-$jsonStr = '{"version":"1.2","url":"http:\/\/worldtimeengine.com\/current\/10_10","location":{"region":"Nigeria","latitude":10,"longitude":10},"summary":{"utc":"2011-11-25 09:52:10","local":"2011-11-25 10:52:10","hasDst":true},"current":{"abbreviation":"WAT","description":"West Africa Time","utcOffset":"+1:00"}}';
-$json = json_decode($jsonStr);
+$wteJson = array(
+  "version" => "1.2",
+  "url" => "http:\/\/worldtimeengine.com\/current\/-0.1_51",
+  "location" => array(
+    "region" => "United Kingdom",
+    "latitude" => "51",
+    "longitude" => "-0.1"
+  ),
+  "summary" => array(
+    "utc" => "2011-11-24 22:45:53",
+    "local" => "2011-11-24 22:45:53"
+  )
+);
 
-$xmlgen = new XMLGenerator($json, 'timezone');
+$xmlgen = new XMLGenerator($wteJson, 'timezone');
 echo $xmlgen->toXML();
 */
