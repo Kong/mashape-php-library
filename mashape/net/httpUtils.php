@@ -43,14 +43,14 @@ class HttpUtils {
 		return $ip == "127.0.0.1" || $ip == "::1";
 	}
 
-	public static function getHeader($name) {
+    public static function getHeader($name) {
 		$headers = apache_request_headers();
-		foreach (array_keys($headers) as $header) {
-			if ($header == $name) {
-				return $headers[$header];
-			}
-		}
-	}
+        foreach ($headers as $key => $value) {
+            if ($key == $name) {
+                return $value;
+            }
+        }
+    }
 
 	public static function makeHttpRequest($url) {
 		$response = @file_get_contents($url);
