@@ -45,9 +45,9 @@ class HttpUtils {
 
 	public static function getHeader($name) {
 		$headers = apache_request_headers();
-		foreach (array_keys($headers) as $header) {
-			if ($header == $name) {
-				return $headers[$header];
+		foreach ($headers as $key => $value) {
+			if ($key == $name) {
+				return $value;
 			}
 		}
 	}
