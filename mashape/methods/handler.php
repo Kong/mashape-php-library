@@ -133,7 +133,7 @@ class MashapeHandler {
 						header("HTTP/1.0 501 Not Implemented");
 						break;
 					case EXCEPTION_METHOD_NOTFOUND_CODE:
-						header("HTTP/1.0 200 OK");
+						header("HTTP/1.0 404 Not Found");
 						break;
 					case EXCEPTION_AUTH_INVALID_CODE:
 						self::setUnauthorizedResponse();
