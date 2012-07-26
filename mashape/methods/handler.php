@@ -66,7 +66,7 @@ class MashapeHandler {
 			$requestMethod = (isset($_SERVER['REQUEST_METHOD'])) ? strtolower($_SERVER['REQUEST_METHOD']) : null;
 			$params;
 			if ($requestMethod == 'post') {
-				$params = self::getAllParams($_POST);
+				$params = array_merge(self::getAllParams($_GET), self::getAllParams($_POST));
 			} else if ($requestMethod == 'get') {
 				$params = self::getAllParams($_GET);
 			} else if ($requestMethod == 'put' || $requestMethod == 'delete') {
