@@ -1,4 +1,6 @@
-# Mashape PHP library v0.8 **[DEPRECATED]**
+# Mashape PHP library v0.8
+
+**[Deprecated]**: This project is not being maintained anymore.
 
 The Mashape PHP Library is:
 * it's a dead simple PHP framework for generating RESTful APIs
