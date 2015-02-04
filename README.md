@@ -1,4 +1,4 @@
-# Mashape PHP library v0.8
+# Mashape PHP Server Library v0.8
 
 **[Deprecated]**: This project is not being maintained anymore.
 
