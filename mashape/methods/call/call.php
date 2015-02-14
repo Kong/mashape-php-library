@@ -45,6 +45,8 @@ class Call implements IMethodHandler {
 		
 		$this->findMethod($parameters, $methodName, $method, $serverKey, $httpRequestMethod);
 		
+		$instance::$xmlRoot = $methodName;
+		
 		if (strtolower($method->getHttp()) != strtolower($httpRequestMethod)) {
 			throw new MashapeException(EXCEPTION_INVALID_HTTPMETHOD, EXCEPTION_INVALID_HTTPMETHOD_CODE);
 		}
